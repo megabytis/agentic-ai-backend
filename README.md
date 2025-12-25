@@ -1,5 +1,6 @@
 ## Directories Structure
 
+```text
 agentic-ai-backend/
 ├── README.md
 ├── notes/
@@ -27,3 +28,4 @@ agentic-ai-backend/
 │   └── multi-step-workflow/
 │
 └── docker-compose.yml
+```
