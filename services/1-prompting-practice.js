@@ -108,15 +108,16 @@ Costs:
 2. Solar panel cost: 250x
 3. Maintenance cost: 100,000 + 100x
 Total cost: 100x + 250x + 100,000 + 100x = 450x + 100,000
-
 `;
+
+const prompt8 = "Tell me about 2mm thin invisible wooden door!"; // hallucinating prompt :)
 
 const response = await fetch("http://localhost:11434/api/generate", {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
     model: "gemini-3-flash-preview:cloud",
-    prompt: `${prompt7}`,
+    prompt: `${prompt8}`,
     stream: false,
   }),
 });

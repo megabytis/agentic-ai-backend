@@ -159,12 +159,11 @@ Models may:
 - Sound confident but be wrong
 
 **Example:**
-A realistic description of a **non-existent product**
+let's assume i'm asking a model about an non-exitence product in such a way that it feels like it does exist. Then the model will give false nd random response.
 
 ---
 
 ### How to Reduce Hallucinations
 
-- Ask model to **quote source text first**
-- Then answer using only those quotes
-- Maintain traceability to original data
+- Ask model to **find relevant information bout the provided text first**
+- Then answer the question based on the relevant information.
