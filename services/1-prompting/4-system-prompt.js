@@ -1,7 +1,23 @@
-import readline from "readline";
-import { chat } from "../model.js";
+/**
+ * @file 4-system-prompt.js
+ * @description This file demonstrates the concept of "System Prompts" in LLMs.
+ * 
+ * WHAT IS A SYSTEM PROMPT?
+ * A system prompt (sometimes called a system message or system instruction) is a high-level 
+ * instruction given to an AI model before the actual conversation begins. It acts as the 
+ * "personality" or "operating manual" for the AI.
+ * 
+ * WHY IS IT IMPORTANT?
+ * 1. Persona Definition: It tells the AI who it is (e.g., "You are a math tutor" vs "You are a pirate").
+ * 2. Behavior Control: It sets rules for how the AI should respond (e.g., "Be concise", "Use professional tone").
+ * 3. Constraints: It can forbid certain behaviors (e.g., "Do not give direct answers", "Do not mention you are an AI").
+ * 4. Contextual Awareness: It provides the AI with background information it needs to stay relevant.
+ * 5. Consistency: It ensures the AI maintains the same character and quality throughout a long session.
+ */
 
-export const messages = [];
+import readline from "readline";
+
+const messages = [];
 
 const addUserMessage = (text) => {
   const userMessage = { role: "user", content: text };
@@ -18,14 +34,50 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
+const chat = async (messages, system = null) => {
+  try {
+    // Debugging : what system prompt is
+    console.log(`\n> Sending system prompt (mode: ${currentMode}):`);
+    console.log(
+      `> "${system?.substring(0, 100)}${system?.length > 100 ? "..." : ""}"\n`
+    );
+
+    const response = await fetch("http://localhost:11434/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "gemma:2b", //"gemini-3-flash-preview:cloud",
+        messages,
+        stream: false,
+        system: system,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data.message.content;
+  } catch (error) {
+    console.error("Chat error:", error);
+    throw error;
+  }
+};
+
 console.log("CLI chatbot started. Type '/bye' to quit.\n");
 
-// Chat-Modes
+// Chat-Modes: These are different "System Prompts" that change the AI's behavior.
 const modes = {
+  // Persona: Patient Tutor | Constraint: No direct answers
   tutor:
     "You are a patient math tutor. Do not directly answer a student's questions. Guide them to a solution step by step.",
+  
+  // Persona: Expert Programmer | Goal: Clear explanations
   coder:
     "You are an expert programming assistant. Explain code concepts clearly with examples.",
+  
+  // Persona: General Assistant | Tone: Helpful, Harmless, Honest
   general: "You are a helpful, harmless, and honest assistant.",
 };
 export let currentMode = "tutor";
@@ -85,7 +137,7 @@ const promptUser = () => {
     // MODEL CALL
     try {
       addUserMessage(input);
-      const reply = await chat(modes[currentMode]);
+      const reply = await chat(messages, modes[currentMode]);
       console.log("\n🤖Assistant: ", reply, "\n");
       addAssistantMessage(reply);
     } catch (err) {
