@@ -1,4 +1,6 @@
-export async function chat(system = null) {
+import { currentMode, messages } from "./1-prompting/4-system-prompt.js";
+
+export const chat = async (system = null) => {
   try {
     // Debugging : what system prompt is
     console.log(`\n> Sending system prompt (mode: ${currentMode}):`);
@@ -27,4 +29,4 @@ export async function chat(system = null) {
     console.error("Chat error:", error);
     throw error;
   }
-}
+};

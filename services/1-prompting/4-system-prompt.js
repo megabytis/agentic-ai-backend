@@ -1,7 +1,7 @@
 import readline from "readline";
-import { chat } from "../model";
+import { chat } from "../model.js";
 
-const messages = [];
+export const messages = [];
 
 const addUserMessage = (text) => {
   const userMessage = { role: "user", content: text };
@@ -28,7 +28,7 @@ const modes = {
     "You are an expert programming assistant. Explain code concepts clearly with examples.",
   general: "You are a helpful, harmless, and honest assistant.",
 };
-let currentMode = "tutor";
+export let currentMode = "tutor";
 
 const promptUser = () => {
   rl.question(`👨You [${currentMode}]: `, async (input) => {
