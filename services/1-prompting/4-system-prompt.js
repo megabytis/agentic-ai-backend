@@ -1,12 +1,12 @@
 /**
  * @file 4-system-prompt.js
  * @description This file demonstrates the concept of "System Prompts" in LLMs.
- * 
+ *
  * WHAT IS A SYSTEM PROMPT?
- * A system prompt (sometimes called a system message or system instruction) is a high-level 
- * instruction given to an AI model before the actual conversation begins. It acts as the 
+ * A system prompt (sometimes called a system message or system instruction) is a high-level
+ * instruction given to an AI model before the actual conversation begins. It acts as the
  * "personality" or "operating manual" for the AI.
- * 
+ *
  * WHY IS IT IMPORTANT?
  * 1. Persona Definition: It tells the AI who it is (e.g., "You are a math tutor" vs "You are a pirate").
  * 2. Behavior Control: It sets rules for how the AI should respond (e.g., "Be concise", "Use professional tone").
@@ -17,7 +17,33 @@
 
 import readline from "readline";
 
-const messages = [];
+const messages = [
+  {
+    role: "user",
+    content:
+      "The Darjeeling Limited — Dysfunctional siblings, India, and emotional baggage.",
+  },
+  {
+    role: "user",
+    content:
+      "Midnight in Paris — Time travel disguised as tourism and nostalgia.",
+  },
+  {
+    role: "user",
+    content:
+      "Into the Wild — Freedom, solitude, and the brutal cost of romanticizing escape.",
+  },
+  {
+    role: "user",
+    content:
+      "The Secret Life of Walter Mitty — Ordinary guy, insane landscapes, zero excuses.",
+  },
+  {
+    role: "user",
+    content:
+      "Before Sunrise — One night, one city, conversations that hit harder than sightseeing.",
+  },
+];
 
 const addUserMessage = (text) => {
   const userMessage = { role: "user", content: text };
@@ -34,8 +60,9 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-const chat = async (messages, system = null) => {
+const chat = async (messages, system = null, temp = 1.0) => {
   try {
+    console.log(temp);
     // Debugging : what system prompt is
     console.log(`\n> Sending system prompt (mode: ${currentMode}):`);
     console.log(
@@ -46,10 +73,16 @@ const chat = async (messages, system = null) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "gemma:2b", //"gemini-3-flash-preview:cloud",
+        model: "deepseek-r1:1.5b",
         messages,
         stream: false,
         system: system,
+        options: {
+          temperature: temp,
+          // top_p: 0.9, // Nucleus sampling - try lower values
+          // top_k: 10, // Limit to top k tokens - try low values
+          // repeat_penalty: 1.1, // Penalize repetition
+        },
       }),
     });
 
@@ -72,15 +105,15 @@ const modes = {
   // Persona: Patient Tutor | Constraint: No direct answers
   tutor:
     "You are a patient math tutor. Do not directly answer a student's questions. Guide them to a solution step by step.",
-  
+
   // Persona: Expert Programmer | Goal: Clear explanations
   coder:
     "You are an expert programming assistant. Explain code concepts clearly with examples.",
-  
+
   // Persona: General Assistant | Tone: Helpful, Harmless, Honest
   general: "You are a helpful, harmless, and honest assistant.",
 };
-export let currentMode = "tutor";
+export let currentMode = "general";
 
 const promptUser = () => {
   rl.question(`👨You [${currentMode}]: `, async (input) => {
@@ -137,7 +170,7 @@ const promptUser = () => {
     // MODEL CALL
     try {
       addUserMessage(input);
-      const reply = await chat(messages, modes[currentMode]);
+      const reply = await chat(messages, modes[currentMode], 0);
       console.log("\n🤖Assistant: ", reply, "\n");
       addAssistantMessage(reply);
     } catch (err) {
