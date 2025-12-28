@@ -1,21 +1,31 @@
-const add_user_message = (messages, text) => {
-  const user_message = { role: "user", content: text };
-  messages.push(user_message);
+import readline from "readline";
+
+const messages = [
+  {
+    role: "system",
+    // content:
+    // "You are a helpful assistant that explains GenAI concepts clearly and concisely.",
+  },
+];
+
+const addUserMessage = (text) => {
+  const userMessage = { role: "user", content: text };
+  messages.push(userMessage);
 };
 
-const add_assistant_message = (messages, text) => {
-  const assistant_message = { role: "assistant", content: text };
-  messages.push(assistant_message);
+const addAssistantMessage = (text) => {
+  const assistantMessage = { role: "assistant", content: text };
+  messages.push(assistantMessage);
 };
 
-const chat = async (messages) => {
+const chat = async () => {
   try {
     const response = await fetch("http://localhost:11434/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         model: "gemma:2b", //"gemini-3-flash-preview:cloud",
-        messages: messages,
+        messages,
         stream: false,
       }),
     });
@@ -24,30 +34,39 @@ const chat = async (messages) => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    const jsonData = await response.json();
-    return jsonData.message.content;
+    const data = await response.json();
+    return data.message.content;
   } catch (error) {
     console.error("Chat error:", error);
     throw error;
   }
 };
 
-const messages = [];
-messages.push({
-  role: "system",
-  content:
-    "You are a helpful assistant that explains GenAI concepts clearly and concisely.",
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
 });
 
-const userPrompt = async (text) => {
-  add_user_message(messages, text);
-  const response = await chat(messages);
-  console.log("👨User: ", text);
-  console.log("🤖Assistant:", response, "\n");
-  add_assistant_message(messages, response);
+console.log("CLI chatbot started. Type 'exit' to quit.\n");
+
+const promptUser = () => {
+  rl.question("You: ", async (input) => {
+    if (input.toLowerCase() === "exit") {
+      rl.close();
+      return;
+    }
+
+    try {
+      addUserMessage(input);
+      const reply = await chat();
+      console.log("🤖Assistant: ", reply, "\n");
+      addAssistantMessage(reply);
+    } catch (err) {
+      console.log("Error: ", err.message);
+    }
+
+    promptUser();
+  });
 };
 
-await userPrompt("Hello");
-await userPrompt("I just started learning GenAI");
-await userPrompt("tell me something about it ");
-await userPrompt("How is it different from ML?");
+promptUser();
