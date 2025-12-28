@@ -1,13 +1,6 @@
 import readline from "readline";
 
-const messages = [
-  {
-    role: "system",
-    // system prompt 👇
-    content:
-      "You are a patient math tutor. Do not directly answer a student's questions. Guide them to a solution step by step.",
-  },
-];
+const messages = [];
 
 const addUserMessage = (text) => {
   const userMessage = { role: "user", content: text };
@@ -19,8 +12,14 @@ const addAssistantMessage = (text) => {
   messages.push(assistantMessage);
 };
 
-const chat = async () => {
+const chat = async (system = null) => {
   try {
+    // Debugging : what system prompt is
+    console.log(`\n> Sending system prompt (mode: ${currentMode}):`);
+    console.log(
+      `> "${system?.substring(0, 100)}${system?.length > 100 ? "..." : ""}"\n`
+    );
+
     const response = await fetch("http://localhost:11434/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -28,6 +27,7 @@ const chat = async () => {
         model: "gemma:2b", //"gemini-3-flash-preview:cloud",
         messages,
         stream: false,
+        system: system,
       }),
     });
 
@@ -50,16 +50,71 @@ const rl = readline.createInterface({
 
 console.log("CLI chatbot started. Type '/bye' to quit.\n");
 
+// Chat-Modes
+const modes = {
+  tutor:
+    "You are a patient math tutor. Do not directly answer a student's questions. Guide them to a solution step by step.",
+  coder:
+    "You are an expert programming assistant. Explain code concepts clearly with examples.",
+  general: "You are a helpful, harmless, and honest assistant.",
+};
+let currentMode = "tutor";
+
 const promptUser = () => {
-  rl.question("👨You: ", async (input) => {
+  rl.question(`👨You [${currentMode}]: `, async (input) => {
+    // QUIT
     if (input.toLowerCase() === "/bye") {
       rl.close();
       return;
     }
 
+    // MODE without arguments: to show available modes
+    if (input.toLocaleLowerCase() === "/mode") {
+      let counter = 1;
+      console.log("\nAvailable modes:");
+      for (const mode of Object.keys(modes)) {
+        console.log(`${counter}. ${mode}`);
+        counter++;
+      }
+      console.log("\nSpecify mode with format: '/mode <mode_name>'\n");
+      promptUser();
+      return;
+    }
+
+    // MODE with arguments: to actually change mode
+    if (input.toLowerCase().startsWith("/mode ")) {
+      const newMode = input.split(" ")[1].toLowerCase();
+      if (modes[newMode]) {
+        currentMode = newMode;
+        console.log(`\nMode changed to: ${newMode}\n`);
+      } else {
+        console.log(`\nUnknown mode: ${newMode}`);
+        console.log("Available modes:", Object.keys(modes).join(", "), "\n");
+      }
+      promptUser();
+      return;
+    }
+
+    // To show current mode without switching
+    if (input.toLowerCase() === "/current") {
+      console.log(`\nCurrent mode: ${currentMode}`);
+      console.log(`Prompt: ${modes[currentMode]}\n`);
+      promptUser();
+      return;
+    }
+
+    // To RESET conversation
+    if (input.toLowerCase() === "/clear") {
+      messages.length = 0;
+      console.log("\nConversation cleared!\n");
+      promptUser();
+      return;
+    }
+
+    // MODEL CALL
     try {
       addUserMessage(input);
-      const reply = await chat();
+      const reply = await chat(modes[currentMode]);
       console.log("\n🤖Assistant: ", reply, "\n");
       addAssistantMessage(reply);
     } catch (err) {
@@ -70,4 +125,5 @@ const promptUser = () => {
   });
 };
 
+console.log(`Current mode: ${currentMode}\n`);
 promptUser();
