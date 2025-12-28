@@ -1,4 +1,5 @@
 import readline from "readline";
+import { chat } from "../model";
 
 const messages = [];
 
@@ -10,37 +11,6 @@ const addUserMessage = (text) => {
 const addAssistantMessage = (text) => {
   const assistantMessage = { role: "assistant", content: text };
   messages.push(assistantMessage);
-};
-
-const chat = async (system = null) => {
-  try {
-    // Debugging : what system prompt is
-    console.log(`\n> Sending system prompt (mode: ${currentMode}):`);
-    console.log(
-      `> "${system?.substring(0, 100)}${system?.length > 100 ? "..." : ""}"\n`
-    );
-
-    const response = await fetch("http://localhost:11434/api/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "gemma:2b", //"gemini-3-flash-preview:cloud",
-        messages,
-        stream: false,
-        system: system,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data = await response.json();
-    return data.message.content;
-  } catch (error) {
-    console.error("Chat error:", error);
-    throw error;
-  }
 };
 
 const rl = readline.createInterface({
@@ -86,6 +56,7 @@ const promptUser = () => {
       const newMode = input.split(" ")[1].toLowerCase();
       if (modes[newMode]) {
         currentMode = newMode;
+        messages.length = 0; // reseting memory after changing mode
         console.log(`\nMode changed to: ${newMode}\n`);
       } else {
         console.log(`\nUnknown mode: ${newMode}`);
