@@ -1,4 +1,6 @@
 import readline from "readline";
+import dotenv from "dotenv";
+dotenv.config();
 
 const messages = [
   {
@@ -20,7 +22,7 @@ const addAssistantMessage = (text) => {
 
 const chat = async () => {
   try {
-    const response = await fetch("http://localhost:11434/api/chat", {
+    const response = await fetch(process.env.LOCALHOST_OLLAMA_CHAT_API, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

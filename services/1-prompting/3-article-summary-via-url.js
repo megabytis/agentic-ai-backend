@@ -1,6 +1,8 @@
 import validator from "validator";
 import { JSDOM } from "jsdom";
 import { Readability } from "@mozilla/readability";
+import dotenv from "dotenv"
+dotenv.config()
 
 const url = `https://sleepyclasses.com/womens-safety-in-india/`;
 
@@ -25,7 +27,7 @@ const articleText = article.textContent.trim();
 const MAX_CHAR = 5000;
 const cleanText = articleText.slice(0, MAX_CHAR);
 
-const response = await fetch("http://localhost:11434/api/generate", {
+const response = await fetch(LOCALHOST_OLLAMA_GENERATE_API, {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({

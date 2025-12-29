@@ -16,6 +16,8 @@
  */
 
 import readline from "readline";
+import dotenv from "dotenv"
+dotenv.config()
 
 const messages = [
   {
@@ -69,7 +71,7 @@ const chat = async (messages, system = null, temp = 1.0) => {
       `> "${system?.substring(0, 100)}${system?.length > 100 ? "..." : ""}"\n`
     );
 
-    const response = await fetch("http://localhost:11434/api/chat", {
+    const response = await fetch(process.env.LOCALHOST_OLLAMA_CHAT_API, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
