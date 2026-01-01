@@ -2,129 +2,200 @@
 
 ```text
 agentic-ai-backend/
-├── README.md                          # Repo overview, progress tracker, navigation
-├── .gitignore                         # Python, env, IDE files
-├── requirements.txt                   # Global dependencies (minimal, updated per phase)
-├── setup.py                           # Optional: for shared utils as package
+├── README.md
+├── .gitignore
+├── .env.example
+├── pyproject.toml
+├── .python-version
+├── Makefile
 │
 ├── docs/
-│   ├── ARCHITECTURE.md                # High-level system design decisions
-│   ├── LEARNINGS.md                   # Key insights, mistakes, aha moments
-│   ├── GLOSSARY.md                    # Terms you learn (embeddings, tokens, etc.)
-│   └── PHASE_NOTES/
-│       ├── phase_0.md
-│       ├── phase_1.md
-│       ├── ...
-│       └── phase_10.md
+│   ├── architecture/
+│   │   ├── system_overview.md
+│   │   ├── ai_backend_basics.md
+│   │   └── production_ai_backend.md
+│   │
+│   ├── decisions/
+│   │   ├── why_python.md
+│   │   ├── why_fastapi.md
+│   │   ├── why_langgraph.md
+│   │   ├── why_rag.md
+│   │   └── why_not_finetuning.md
+│   │
+│   ├── mental_models/
+│   │   ├── llm_statelessness.md
+│   │   ├── tokens_and_context.md
+│   │   ├── prompting_vs_programming.md
+│   │   ├── agents_vs_workflows.md
+│   │   └── tool_calling_loop.md
+│   │
+│   ├── glossary.md
+│   └── roadmap.md
 │
 ├── shared/
 │   ├── __init__.py
-│   ├── llm_client.py                  # Shared LLM wrapper (OpenAI/Anthropic)
-│   ├── prompt_templates.py            # Reusable prompt structures
-│   ├── config.py                      # Environment vars, API keys
-│   └── utils.py                       # Common helpers (logging, validation)
+│   │
+│   ├── config/
+│   │   ├── __init__.py
+│   │   └── settings.py
+│   │
+│   ├── llm/
+│   │   ├── __init__.py
+│   │   ├── client.py
+│   │   └── models.py
+│   │
+│   ├── prompts/
+│   │   ├── __init__.py
+│   │   ├── system_prompts.py
+│   │   ├── user_prompts.py
+│   │   └── guardrails.py
+│   │
+│   ├── memory/
+│   │   ├── __init__.py
+│   │   ├── base.py
+│   │   ├── buffer_memory.py
+│   │   └── summary_memory.py
+│   │
+│   ├── tools/
+│   │   ├── __init__.py
+│   │   ├── registry.py
+│   │   ├── schemas.py
+│   │   └── executor.py
+│   │
+│   ├── rag/
+│   │   ├── __init__.py
+│   │   ├── chunking.py
+│   │   ├── embeddings.py
+│   │   ├── retriever.py
+│   │   └── pipeline.py
+│   │
+│   ├── observability/
+│   │   ├── __init__.py
+│   │   ├── logging.py
+│   │   ├── tracing.py
+│   │   └── cost_tracking.py
+│   │
+│   ├── schemas/
+│   │   ├── __init__.py
+│   │   └── base.py
+│   │
+│   └── utils/
+│       ├── __init__.py
+│       ├── validators.py
+│       └── helpers.py
 │
-├── phase_0_setup/
-│   ├── README.md                      # Phase goal, concepts, project spec
-│   ├── project/
-│   │   ├── main.py                    # Minimal GenAI backend service
-│   │   ├── requirements.txt           # Phase-specific deps
-│   │   └── .env.example               # API key template
-│   └── notes.md                       # Your written explanations
+├── phases/
+│   ├── phase_00_setup/
+│   │   ├── README.md
+│   │   ├── concepts.md
+│   │   ├── decisions.md
+│   │   ├── app/
+│   │   │   └── main.py
+│   │   └── notes.md
+│   │
+│   ├── phase_01_prompting/
+│   │   ├── README.md
+│   │   ├── concepts.md
+│   │   ├── decisions.md
+│   │   ├── app/
+│   │   │   ├── main.py
+│   │   │   ├── prompt_controller.py
+│   │   │   └── prompts.py
+│   │   └── notes.md
+│   │
+│   ├── phase_02_memory/
+│   │   ├── README.md
+│   │   ├── concepts.md
+│   │   ├── decisions.md
+│   │   ├── app/
+│   │   │   ├── main.py
+│   │   │   └── memory_service.py
+│   │   └── notes.md
+│   │
+│   ├── phase_03_structured_output/
+│   │   ├── README.md
+│   │   ├── concepts.md
+│   │   ├── decisions.md
+│   │   ├── app/
+│   │   │   ├── main.py
+│   │   │   └── schemas.py
+│   │   └── notes.md
+│   │
+│   ├── phase_04_tool_calling/
+│   │   ├── README.md
+│   │   ├── concepts.md
+│   │   ├── decisions.md
+│   │   ├── app/
+│   │   │   ├── main.py
+│   │   │   ├── tools.py
+│   │   │   └── agent_loop.py
+│   │   └── notes.md
+│   │
+│   ├── phase_05_rag/
+│   │   ├── README.md
+│   │   ├── concepts.md
+│   │   ├── decisions.md
+│   │   ├── app/
+│   │   │   ├── main.py
+│   │   │   └── rag_service.py
+│   │   └── notes.md
+│   │
+│   ├── phase_06_agentic_ai/
+│   │   ├── README.md
+│   │   ├── concepts.md
+│   │   ├── decisions.md
+│   │   ├── app/
+│   │   │   ├── main.py
+│   │   │   ├── planner.py
+│   │   │   ├── executor.py
+│   │   │   └── reflector.py
+│   │   └── notes.md
+│   │
+│   ├── phase_07_langgraph/
+│   │   ├── README.md
+│   │   ├── concepts.md
+│   │   ├── decisions.md
+│   │   ├── app/
+│   │   │   ├── main.py
+│   │   │   ├── graph.py
+│   │   │   └── nodes.py
+│   │   └── notes.md
+│   │
+│   ├── phase_08_mcp/
+│   │   ├── README.md
+│   │   ├── concepts.md
+│   │   ├── decisions.md
+│   │   ├── app/
+│   │   │   ├── server/
+│   │   │   │   ├── main.py
+│   │   │   │   └── resources.py
+│   │   │   └── client/
+│   │   │       └── main.py
+│   │   └── notes.md
+│   │
+│   ├── phase_09_production/
+│   │   ├── README.md
+│   │   ├── concepts.md
+│   │   ├── decisions.md
+│   │   ├── app/
+│   │   │   ├── main.py
+│   │   │   ├── security.py
+│   │   │   ├── observability.py
+│   │   │   └── cost_control.py
+│   │   └── notes.md
+│   │
+│   └── phase_10_portfolio/
+│       ├── README.md
+│       ├── ARCHITECTURE.md
+│       ├── resume_notes.md
+│       ├── interview_prep.md
+│       └── demo_walkthrough.md
 │
-├── phase_1_prompting/
-│   ├── README.md
-│   ├── project/
-│   │   ├── main.py                    # Prompt-controlled chatbot backend
-│   │   ├── prompts.py                 # Prompt variations
-│   │   └── tests.py                   # Manual test cases
-│   └── notes.md
-│
-├── phase_2_memory/
-│   ├── README.md
-│   ├── project/
-│   │   ├── main.py                    # Chat backend with memory
-│   │   ├── memory.py                  # Memory strategies
-│   │   └── tests.py
-│   └── notes.md
-│
-├── phase_3_structured_outputs/
-│   ├── README.md
-│   ├── project/
-│   │   ├── main.py                    # JSON output backend
-│   │   ├── schemas.py                 # Pydantic models
-│   │   └── tests.py
-│   └── notes.md
-│
-├── phase_4_tool_calling/
-│   ├── README.md
-│   ├── project/
-│   │   ├── main.py                    # AI agent with tools
-│   │   ├── tools.py                   # Tool definitions
-│   │   └── tests.py
-│   └── notes.md
-│
-├── phase_5_rag/
-│   ├── README.md
-│   ├── project/
-│   │   ├── main.py                    # Knowledge-base chatbot
-│   │   ├── embeddings.py              # Embedding logic
-│   │   ├── vectordb.py                # Vector store wrapper
-│   │   ├── chunking.py                # Document chunking
-│   │   ├── data/                      # Sample documents
-│   │   └── tests.py
-│   └── notes.md
-│
-├── phase_6_agentic/
-│   ├── README.md
-│   ├── project/
-│   │   ├── main.py                    # Multi-step task agent
-│   │   ├── agent.py                   # Agent logic (plan, execute, reflect)
-│   │   ├── tools.py
-│   │   └── tests.py
-│   └── notes.md
-│
-├── phase_7_langgraph/
-│   ├── README.md
-│   ├── project/
-│   │   ├── main.py                    # Graph-based workflow
-│   │   ├── graph.py                   # LangGraph structure
-│   │   ├── nodes.py                   # Node implementations
-│   │   └── tests.py
-│   └── notes.md
-│
-├── phase_8_mcp/
-│   ├── README.md
-│   ├── project/
-│   │   ├── server/
-│   │   │   ├── main.py                # MCP server
-│   │   │   └── resources.py
-│   │   ├── client/
-│   │   │   └── main.py                # MCP client
-│   │   └── tests.py
-│   └── notes.md
-│
-├── phase_9_production/
-│   ├── README.md
-│   ├── project/
-│   │   ├── main.py                    # Production-ready service
-│   │   ├── observability.py           # Logging, tracing
-│   │   ├── security.py                # Input validation, rate limiting
-│   │   ├── cost_control.py            # Token tracking
-│   │   └── tests.py
-│   └── notes.md
-│
-├── phase_10_portfolio/
-│   ├── README.md
-│   ├── final_project/
-│   │   ├── (structured like production service)
-│   │   └── ARCHITECTURE.md            # Full system explanation
-│   ├── resume_guide.md
-│   ├── interview_prep.md
-│   └── demo_script.md
-│
-└── experiments/                        # Scratch work, failed attempts, explorations
-    └── README.md                       # What this folder is for
+└── experiments/
+    ├── README.md
+    ├── prompt_playground/
+    ├── token_limits/
+    └── failure_cases/
 ```
 
 # Agentic AI Backend
