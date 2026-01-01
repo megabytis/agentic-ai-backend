@@ -5,8 +5,7 @@ dotenv.config();
 const messages = [
   {
     role: "system",
-    // content:
-    // "You are a helpful assistant that explains GenAI concepts clearly and concisely.",
+    content: "```json",
   },
 ];
 
@@ -26,9 +25,14 @@ const chat = async () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "gemma:2b", //"gemini-3-flash-preview:cloud",
+        model: "llama3.2:3b",
         messages,
         stream: false,
+        // options: {
+        //   temperature: 0.7,
+        //   stop: ["```"],
+        // },
+        format: "json",
       }),
     });
 
@@ -61,7 +65,7 @@ const promptUser = () => {
     try {
       addUserMessage(input);
       const reply = await chat();
-      console.log("🤖Assistant: ", reply, "\n");
+      console.log("\n🤖Assistant: ", reply, "\n");
       addAssistantMessage(reply);
     } catch (err) {
       console.log("Error: ", err.message);

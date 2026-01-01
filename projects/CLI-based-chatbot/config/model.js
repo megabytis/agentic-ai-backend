@@ -1,5 +1,7 @@
+import "dotenv/config";
+
 export const MODEL_CONFIG = {
-  baseUrl: "http://localhost:11434/api/chat",
-  model: "gemma:2b",
+  baseUrl: process.env.LOCALHOST_OLLAMA_CHAT_API,
+  model: "llama3.2:1b",
   stream: false,
 };

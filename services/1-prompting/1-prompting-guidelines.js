@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 const message1 = `
 You should express what you want a model to do by providing instructions that are as clear and specific as you can possibly make them. This will guide the model towards the desired output, and reduce the chances of receiving irrelevant or incorrect responses. Don't confuse writing a clear prompt with writing a short prompt. In many cases, longer prompts provide more clarity and context for the model, which can lead to more detailed and relevant outputs.
 `;
@@ -118,15 +120,21 @@ Total cost: 100x + 250x + 100,000 + 100x = 450x + 100,000
 
 const prompt8 = "Tell me about 2mm thin invisible wooden door!"; // hallucinating prompt :)
 
-const response = await fetch("http://localhost:11434/api/generate", {
+const apiUrl = process.env.LOCALHOST_OLLAMA_GENERATE_API;
+
+const response = await fetch(apiUrl, {
   method: "POST",
   headers: { "Content-Type": "application/json" },
   body: JSON.stringify({
-    model: "gemma:2b",
-    prompt: `${prompt9_modified}`,
+    model: "llama3.2:1b",
+    prompt: `${prompt2}`,
     stream: false,
   }),
 });
+
+if (!response.ok) {
+  throw new Error(`HTTP error! status: ${response.status}`);
+}
 
 const data = await response.json();
 console.log(data.response);
