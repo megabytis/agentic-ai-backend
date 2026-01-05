@@ -1,11 +1,11 @@
 [
   {
-    "task": "Generate Python code to sort a list of dictionaries by a specific key."
+    "task": "Generate Python code to calculate the factorial of a given non-negative integer."
   },
   {
-    "task": "Generate a JSON configuration for a simple web server with a root directory and port number."
+    "task": "Create a JSON configuration object for a web server, including port, hostname, and logging settings."
   },
   {
-    "task": "Generate a regular expression to validate an email address."
+    "task": "Write a regular expression to validate an email address."
   }
 ]
