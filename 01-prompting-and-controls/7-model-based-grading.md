@@ -23,3 +23,21 @@ How:
 Key Insight:
 Prompt evaluation itself is an LLM-powered system.
 LLMs can judge other LLMs when guided correctly.
+
+## Model-Based Grading – Result
+
+Outcome:
+
+- Model returns structured evaluation (strengths, weaknesses, reasoning, score)
+- Scores are persisted for later comparison
+
+Why this matters:
+
+- Enables objective prompt iteration
+- Makes prompt quality measurable
+- Allows regression detection across prompt versions
+
+Status:
+
+- Model-based grading implemented
+- Results saved to JSON for analysis
