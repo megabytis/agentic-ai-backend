@@ -1,0 +1,37 @@
+[
+  {
+    "strengths": [
+      "Robust input validation and clear error handling for non-negative integers.",
+      "Well-structured, readable code with comprehensive docstrings and explanations."
+    ],
+    "weaknesses": [
+      "No explicit handling for potential overflow with extremely large factorials (though Python handles large integers automatically up to system memory limits)."
+    ],
+    "reasoning": "The solution is excellent, providing a correct and robust iterative factorial calculation. It includes thorough input validation, clear docstrings, and helpful explanations. The example usage with proper error handling is also well-implemented. The inclusion of a recursive alternative for educational purposes further enhances its value. The only minor point is that while Python's arbitrary-precision integers mitigate overflow for typical use, a note on computational limits for extremely large numbers could be considered in a highly critical production environment, but it's not a true weakness for this task.",
+    "score": 9
+  },
+  {
+    "strengths": [
+      "Comprehensive configuration exceeding the prompt's basic requirements.",
+      "Well-structured JSON with clear hierarchy and meaningful keys."
+    ],
+    "weaknesses": [
+      "Adds 'routes' and 'SSL' configurations which were not requested, making it overly verbose for the given task.",
+      "Explanation for 'log_format' placeholders is generic and not tied to a specific logging library or standard."
+    ],
+    "reasoning": "The solution provides a robust and well-organized JSON configuration, demonstrating a good understanding of web server settings. However, it significantly over-delivers by including SSL and routing configurations, which were outside the scope of the original request for 'port, hostname, and logging settings'. While comprehensive, this makes it less focused on the prompt's specific requirements.",
+    "score": 8
+  },
+  {
+    "strengths": [
+      "Provides a widely accepted and practical regex for common email formats, balancing strictness and usability.",
+      "Includes a clear, component-by-component explanation of the regex and discusses its practical limitations (RFC complexity, IDNs, deliverability) very well."
+    ],
+    "weaknesses": [
+      "The regex for the domain name `[a-zA-Z0-9.-]+` does not strictly enforce domain label rules (e.g., hyphens not at start/end, or consecutive dots).",
+      "The TLD `[a-zA-Z]{2,}` is too restrictive, as many new TLDs are numeric or longer than 2 characters (e.g., `.app`, `.email`, `.xyz`)."
+    ],
+    "reasoning": "The solution provides a very good, practical email validation regex that covers most common cases. Its detailed explanation and discussion of limitations are excellent. However, the regex itself has minor flaws concerning domain label strictness and TLD flexibility, which could be improved for broader real-world applicability.",
+    "score": 8
+  }
+]
