@@ -1,11 +1,14 @@
 [
   {
-    "task": "Generate Python code to calculate the factorial of a given non-negative integer."
+    "task": "Write a Python function that takes a list of numbers and returns the sum of all even numbers in the list.",
+    "format": "python"
   },
   {
-    "task": "Create a JSON configuration object for a web server, including port, hostname, and logging settings."
+    "task": "Generate a JSON configuration for a web server with the following settings: port 8080, enable SSL, and set the root directory to '/var/www/html'.",
+    "format": "json"
   },
   {
-    "task": "Write a regular expression to validate an email address."
+    "task": "Create a regular expression to match email addresses.",
+    "format": "regex"
   }
 ]
