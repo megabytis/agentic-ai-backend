@@ -1,19 +1,27 @@
-## Prompt Evaluation – Running the Eval
+## Running the Eval (Execution Phase)
 
 Goal:
-Evaluate how well a prompt performs across multiple test cases.
+Run a single prompt against every test case in the dataset and collect raw outputs.
 
-Core idea:
-For each test case:
+Key ideas:
 
-1. Merge test input with the prompt
-2. Send to LLM
-3. Capture output
-4. Grade the output
-5. Store everything for analysis
+- Dataset = list of test cases (inputs)
+- Prompt = template under test
+- Eval run = dataset × prompt → outputs
 
-Eval Pipeline Structure:
-dataset → run_prompt → run_test_case → run_eval → outputs.json
+Important:
 
-Key takeaway:
-Prompt quality must be measured systematically, not guessed.
+- This step does NOT judge quality yet.
+- No grading logic here (temporary placeholder score only).
+- Outputs must be saved for later comparison.
+
+Eval pipeline structure:
+
+1. run_prompt(test_case) → model output
+2. run_test_case(test_case) → { task, output, score }
+3. run_eval(dataset) → list of results
+
+Outcome:
+
+- A structured JSON containing all model outputs.
+- Baseline for prompt iteration and grading.

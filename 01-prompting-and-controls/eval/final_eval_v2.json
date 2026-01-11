@@ -1,0 +1,29 @@
+[
+  {
+    "task": "Write a Python function that takes a list of numbers and returns the sum of all even numbers in the list.",
+    "format": "python",
+    "output": "def sum_even_numbers(numbers: list) -> int:\n    total_sum = 0\n    for num in numbers:\n        if num % 2 == 0:\n            total_sum += num\n    return total_sum",
+    "model_score": 10,
+    "syntax_score": 10,
+    "final_score": 10.0,
+    "reasoning": "The AI-generated solution is perfectly adequate for the simple task it was given. It is correct, clear, and follows good Python practices like type hinting. There are no significant improvements needed for this specific problem context."
+  },
+  {
+    "task": "Generate a JSON configuration for a web server with the following settings: port 8080, enable SSL, and set the root directory to '/var/www/html'.",
+    "format": "json",
+    "output": "{\n  \"port\": 8080,\n  \"ssl_enabled\": true,\n  \"root_directory\": \"/var/www/html\"\n}",
+    "model_score": 9,
+    "syntax_score": 10,
+    "final_score": 9.5,
+    "reasoning": "The solution accurately translates the user's requirements into a JSON object. While it perfectly fulfills the literal request, it's not a 'real-world' AWS web server configuration (like for an EC2 user data script, Elastic Beanstalk, or NGINX/Apache on EC2) as it's missing service-specific context and necessary details for SSL implementation. However, for a generic JSON representation of the requested parameters, it is excellent."
+  },
+  {
+    "task": "Create a regular expression to match email addresses.",
+    "format": "regex",
+    "output": "^[a-zA-Z0-9._%+-]+@([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$",
+    "model_score": 7,
+    "syntax_score": 10,
+    "final_score": 8.5,
+    "reasoning": "The provided regex is a good practical solution for many common email validation scenarios. It correctly identifies the basic structure of an email (local-part@domain) and uses common character sets. However, it is not a fully RFC-compliant validator, as email addresses can be significantly more complex (e.g., quoted local parts, IP literal domains, internationalized domains and local parts). For typical web form validation, it's often 'good enough', but for strict compliance or handling all possible valid emails, it falls short."
+  }
+]

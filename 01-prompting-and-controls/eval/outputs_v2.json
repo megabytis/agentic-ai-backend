@@ -1,0 +1,17 @@
+[
+  {
+    "task": "Write a Python function that takes a list of numbers and returns the sum of all even numbers in the list.",
+    "output": "def sum_even_numbers(numbers: list) -> int:\n    total_sum = 0\n    for num in numbers:\n        if num % 2 == 0:\n            total_sum += num\n    return total_sum",
+    "score": 10
+  },
+  {
+    "task": "Generate a JSON configuration for a web server with the following settings: port 8080, enable SSL, and set the root directory to '/var/www/html'.",
+    "output": "{\n  \"port\": 8080,\n  \"ssl_enabled\": true,\n  \"root_directory\": \"/var/www/html\"\n}",
+    "score": 10
+  },
+  {
+    "task": "Create a regular expression to match email addresses.",
+    "output": "^[a-zA-Z0-9._%+-]+@([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$",
+    "score": 10
+  }
+]

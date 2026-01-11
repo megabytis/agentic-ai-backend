@@ -1,11 +1,12 @@
+from langchain_openai import ChatOpenAI
 import os
 from dotenv import load_dotenv
 
 load_dotenv()
-from langchain_google_genai import ChatGoogleGenerativeAI
 
-API = os.getenv("GEMINI_API_KEY")
-MODEL = "gemini-2.5-flash-lite"
+
+API = os.getenv("OPENROUTER_API_KEY")
+MODEL = "qwen/qwen3-coder:free"
 
 messages = [
     {
@@ -27,7 +28,11 @@ def add_user_message(text):
 
 def chat(message):
     try:
-        llm = ChatGoogleGenerativeAI(model=MODEL)
+        llm = ChatOpenAI(
+            api_key=API,
+            base_url="https://openrouter.ai/api/v1",
+            model=MODEL,
+        )
         response = llm.invoke(message)
         return response.content
     except ValueError as e:
