@@ -37,6 +37,11 @@ Solution to Evaluate:
 {output_item["output"]}
 </solution>
 
+Solution criteria to follow:
+<solution_criteria>
+{test_case['solution_criteria']}
+</solution_criteria>
+
 Output Format
 Provide your evaluation as a structured JSON object with the following fields, in this specific order:
 - "strengths": An array of 1-2 key strengths

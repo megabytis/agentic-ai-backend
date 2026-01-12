@@ -1,29 +1,29 @@
 [
   {
-    "task": "Write a Python function that takes a list of numbers and returns the sum of all even numbers in the list.",
+    "task": "Write a Python function that takes a list of integers and returns a new list containing only the even numbers.",
     "format": "python",
     "output": "def sum_even_numbers(numbers: list) -> int:\n    total_sum = 0\n    for num in numbers:\n        if num % 2 == 0:\n            total_sum += num\n    return total_sum",
-    "model_score": 10,
+    "model_score": 3,
     "syntax_score": 10,
-    "final_score": 10.0,
-    "reasoning": "The AI-generated solution is perfectly adequate for the simple task it was given. It is correct, clear, and follows good Python practices like type hinting. There are no significant improvements needed for this specific problem context."
+    "final_score": 6.5,
+    "reasoning": "The solution fails to meet the core requirement of returning a new list of even numbers. Instead, it calculates and returns the sum of even numbers. The function signature and name are also inconsistent with its actual logic."
   },
   {
-    "task": "Generate a JSON configuration for a web server with the following settings: port 8080, enable SSL, and set the root directory to '/var/www/html'.",
+    "task": "Create a JSON configuration for a simple web server that listens on port 8080 and serves files from a '/var/www/html' directory.",
     "format": "json",
     "output": "{\n  \"port\": 8080,\n  \"ssl_enabled\": true,\n  \"root_directory\": \"/var/www/html\"\n}",
-    "model_score": 9,
+    "model_score": 6,
     "syntax_score": 10,
-    "final_score": 9.5,
-    "reasoning": "The solution accurately translates the user's requirements into a JSON object. While it perfectly fulfills the literal request, it's not a 'real-world' AWS web server configuration (like for an EC2 user data script, Elastic Beanstalk, or NGINX/Apache on EC2) as it's missing service-specific context and necessary details for SSL implementation. However, for a generic JSON representation of the requested parameters, it is excellent."
+    "final_score": 8.0,
+    "reasoning": "The solution correctly identifies the port and the directory path. However, it fails to adhere to the specified key name 'document_root', using 'root_directory' instead, and adds an unnecessary 'ssl_enabled' field not requested by the prompt or solution criteria. While 'root_directory' is functionally similar to 'document_root', strict adherence to criteria is important for configuration files."
   },
   {
-    "task": "Create a regular expression to match email addresses.",
+    "task": "Develop a regular expression to validate an email address.",
     "format": "regex",
     "output": "^[a-zA-Z0-9._%+-]+@([a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$",
-    "model_score": 7,
+    "model_score": 6,
     "syntax_score": 10,
-    "final_score": 8.5,
-    "reasoning": "The provided regex is a good practical solution for many common email validation scenarios. It correctly identifies the basic structure of an email (local-part@domain) and uses common character sets. However, it is not a fully RFC-compliant validator, as email addresses can be significantly more complex (e.g., quoted local parts, IP literal domains, internationalized domains and local parts). For typical web form validation, it's often 'good enough', but for strict compliance or handling all possible valid emails, it falls short."
+    "final_score": 8.0,
+    "reasoning": "The provided regex offers a decent basic validation for many common email addresses and adheres to the criteria of matching standard format. However, it's overly restrictive for modern email standards and would reject many valid email addresses due to limitations in allowed TLD characters (only 2+ letters) and special characters in the username. It also doesn't consider IDNs. While it fulfills the 'standard email format' loosely, it's not robust for real-world applications."
   }
 ]
