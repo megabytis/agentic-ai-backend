@@ -1,0 +1,38 @@
+[
+  {
+    "strengths": [
+      "Comprehensive and detailed dietary strategy, including macro targets, key principles, extensive food lists, and a sample meal plan, all meticulously tailored for gluten-free muscle gain.",
+      "Excellent emphasis on practical advice like label reading, meal prep, consistency, and monitoring progress, which are crucial for successful long-term adherence and results."
+    ],
+    "weaknesses": [
+      "While calorie and macro targets are provided, the solution could include a brief explanation of how to initially estimate maintenance calories to better justify the starting surplus, or recommend a TDEE calculator.",
+      "The sample meal plan, while good, doesn't explicitly link back to the specific macro/calorie targets, making it challenging for the user to directly implement without further calculation or adjustment."
+    ],
+    "reasoning": "The AI-generated solution is exceptionally thorough and well-structured. It addresses all aspects of the user's request (muscle gain, gluten-free) with detailed, actionable advice. The macro calculations, food recommendations, and practical tips are all accurate and highly relevant. The only minor improvements would be to explicitly connect the sample meal plan to the calculated macros and briefly touch upon how the initial calorie surplus was determined, though this doesn't detract significantly from the overall high quality.",
+    "score": 9
+  },
+  {
+    "strengths": [
+      "Comprehensive and well-structured, covering calorie estimation, dietary principles, meal planning, supplementation, and lifestyle factors specific to a vegan diet and the user's healthy BMI.",
+      "Emphasizes body recomposition over aggressive weight loss for a healthy BMI, promoting a sustainable and nutrient-dense approach."
+    ],
+    "weaknesses": [
+      "Makes assumptions (age, gender, activity level) for calorie calculations without prompting the user, which could lead to inaccurate estimates.",
+      "The disclaimer is good, but the solution heavily relies on general estimates, missing an opportunity to guide the user on how *they* can provide these inputs or use tools for more precise calculations."
+    ],
+    "reasoning": "The AI provides an excellent and thoughtful response tailored to the user's specific context (vegan, healthy BMI, weight loss goal implying body recomposition). It covers all necessary aspects from calorie targets to specific food choices, supplementation, and lifestyle, all while maintaining a healthy, sustainable perspective. The main drawback is the necessary assumptions made for calculations, which ideally would be user-provided or handled with more explicit prompts.",
+    "score": 9
+  },
+  {
+    "strengths": [
+      "Comprehensive and well-structured, integrating endurance nutrition principles with specific low-FODMAP food choices across all macronutrients and meal timings.",
+      "Emphasizes practical advice like portion control for FODMAPs, label reading, cooking from scratch, and strongly recommends professional guidance, which is crucial for restrictive diets combined with high physical activity."
+    ],
+    "weaknesses": [
+      "Could include a more explicit disclaimer early on that the low-FODMAP diet is typically a temporary elimination phase, not a permanent eating style, emphasizing the importance of reintroduction.",
+      "While generally good, some specific FODMAP portion recommendations (e.g., sweet potatoes, berries, avocado) might be slightly oversimplified without stressing the variability and the need for the Monash app more frequently."
+    ],
+    "reasoning": "This solution provides an excellent, detailed, and practical strategy for someone combining endurance training with a low-FODMAP diet. It correctly identifies the challenges and offers a wide range of suitable food choices, meal timing strategies, and essential considerations. The emphasis on individual tolerance and professional guidance is particularly strong. Its thoroughness and actionable advice make it a high-quality response.",
+    "score": 9
+  }
+]
