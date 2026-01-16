@@ -5,11 +5,16 @@ from dotenv import load_dotenv
 load_dotenv()
 from langchain.chat_models import init_chat_model
 from langchain.messages import HumanMessage, AIMessage
-from langchain_openai import ChatOpenAI
 
-llm = ChatOpenAI(model="openai/gpt-oss-120b:free")
+llm = init_chat_model(
+    model="google/gemma-3-27b-it:free",
+    model_provider="google",
+    api_key=API,
+    base_url="https://openrouter.ai/api/v1",
+)
 
-def load_prompt(path="v1/prompt_v1.txt"):
+
+def load_prompt(path="v2/prompt_v2.txt"):
     with open(path, "r") as f:
         return f.read()
 
@@ -21,12 +26,11 @@ def load_dataset(path="dataset.json"):
 
 def run_prompt(prompt_template, test_case):
     prompt = (
-        prompt_template.replace("{{height_cm}}", str(test_case["height_cm"])) 
+        prompt_template.replace("{{height_cm}}", str(test_case["height_cm"]))
         .replace("{{weight_kg}}", str(test_case["weight_kg"]))
         .replace("{{goal}}", test_case["goal"])
         .replace("{{dietary_restrictions}}", test_case["dietary_restrictions"])
     )
-    print(prompt)
 
     message = [HumanMessage(content=prompt)]
     response = llm.invoke(message)
@@ -56,7 +60,7 @@ if __name__ == "__main__":
 
     results = run_eval(dataset, prompt_template)
 
-    with open("v1/outputs_v1.json", "w") as f:
+    with open("v2/outputs_v2.json", "w") as f:
         json.dump(results, f, indent=2)
 
     print("Eval complete. Results saved to outputs_v1.json")
