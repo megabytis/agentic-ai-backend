@@ -1,0 +1,38 @@
+[
+  {
+    "strengths": [
+      "The meal plan clearly aligns with the 'Muscle Gain' and 'Gluten-Free' goals.",
+      "It provides a good variety of protein sources and complex carbohydrates."
+    ],
+    "weaknesses": [
+      "Calorie and macronutrient estimations could be more precise and validated against the user's BMR and TDEE.",
+      "Specific gluten-free considerations for certain items (e.g., ensuring protein powder and rice cakes are certified gluten-free) are not explicitly stated."
+    ],
+    "reasoning": "The AI-generated meal plan is a good starting point for the user's specified goals. It offers a balanced distribution of meals and snacks with appropriate food choices. However, to be a truly expert solution, it would benefit from more precise calorie and macronutrient calculations based on the user's individual metrics and a more explicit emphasis on verifying gluten-free status for processed items.",
+    "score": 7
+  },
+  {
+    "strengths": [
+      "The meal plan adheres to the 'Vegan' dietary restriction and the 'Weight Loss' goal.",
+      "It provides specific food items with quantities and estimated calorie counts for each meal, making it actionable."
+    ],
+    "weaknesses": [
+      "The estimated daily calorie count (1400 kcal) and macronutrient breakdown are not explicitly calculated or justified based on the user's height (168cm) and weight (58kg). A proper BMR/TDEE calculation is missing.",
+      "While vegan, the plan could be more diverse in protein sources and micronutrients. Reliance on tofu and lentils as primary proteins could be supplemented with other vegan protein options."
+    ],
+    "reasoning": "The AI-generated solution successfully created a vegan meal plan tailored for weight loss. However, it lacks the crucial step of calculating the appropriate calorie and macronutrient targets based on the user's specific anthropometric data. This omission makes the plan's effectiveness for the user's stated goal uncertain without further verification. The dietary aspects are well-handled, but the personalization based on physical metrics is absent.",
+    "score": 6
+  },
+  {
+    "strengths": [
+      "Addresses the 'Low-FODMAP' dietary restriction effectively by suggesting appropriate ingredients.",
+      "Provides a structured meal plan with specific quantities and estimated calorie ranges for each meal and snack, aligning with general endurance training needs."
+    ],
+    "weaknesses": [
+      "The macro breakdown is a range and could be more specific, especially for an endurance goal where precise carb timing and intake are crucial.",
+      "Lacks specific guidance on hydration, which is critical for endurance performance and general health."
+    ],
+    "reasoning": "The AI-generated meal plan is a good starting point, directly addressing the 'Low-FODMAP' restriction and offering a sensible structure for endurance goals. However, it could be improved with more precise macro targets and crucial advice on hydration, which is essential for athletic performance.",
+    "score": 7
+  }
+]

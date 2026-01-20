@@ -1,0 +1,35 @@
+[
+  {
+    "athlete_info": {
+      "height_cm": 185,
+      "weight_kg": 90,
+      "goal": "Muscle Gain",
+      "dietary_restrictions": "Gluten-Free"
+    },
+    "output": "\n## Muscle Gain - Gluten-Free - One Day Meal Plan\n\n**Estimated Daily Calories:** 3300 kcal\n\n**Macro Breakdown:** Protein: 180g, Carbs: 400g, Fats: 110g\n\n**Breakfast (7:00 AM) - 650 kcal**\n*   Eggs (3 whole) - 150g\n*   Sweet Potato - 200g, baked\n*   Avocado - 1/4 medium (50g)\n*   Spinach - 50g, saut\u00e9ed\n\n**Mid-Morning Snack (10:00 AM) - 350 kcal**\n*   Greek Yogurt (200g, plain, full fat)\n*   Mixed Berries - 100g\n*   Almonds - 30g\n\n**Lunch (1:00 PM) - 800 kcal**\n*   Chicken Breast - 200g, grilled\n*   Brown Rice - 250g, cooked\n*   Broccoli - 150g, steamed\n*   Olive Oil - 1 tbsp (15ml)\n\n**Pre-Workout Snack (4:00 PM) - 300 kcal**\n*   Banana - 1 medium (120g)\n*   Rice Cakes - 2 (20g)\n*   Almond Butter - 2 tbsp (32g)\n\n**Dinner (7:00 PM) - 900 kcal**\n*   Salmon - 200g, baked\n*   Quinoa - 250g, cooked\n*   Asparagus - 200g, roasted\n*   Olive Oil - 1 tbsp (15ml)\n\n**Evening Snack (9:30 PM) - 300 kcal**\n*   Casein Protein Powder - 40g (mixed with water/almond milk)\n*   Small Apple - 1 medium (100g)\n*   Walnuts - 15g\n\n\n\n",
+    "final_score": 7,
+    "reasoning": "The AI-generated meal plan is a good starting point for the user's specified goals. It offers a balanced distribution of meals and snacks with appropriate food choices. However, to be a truly expert solution, it would benefit from more precise calorie and macronutrient calculations based on the user's individual metrics and a more explicit emphasis on verifying gluten-free status for processed items."
+  },
+  {
+    "athlete_info": {
+      "height_cm": 168,
+      "weight_kg": 58,
+      "goal": "Weight Loss",
+      "dietary_restrictions": "Vegan"
+    },
+    "output": "```\n## Vegan Weight Loss Meal Plan\n\n**Estimated Daily Calories:** 1400 kcal\n**Macro Breakdown:** Protein: 70g, Carbs: 180g, Fats: 50g\n\n**Breakfast (350 kcal)**\n*   Oatmeal: 50g (dry weight)\n*   Soy Milk (unsweetened): 240ml\n*   Blueberries: 75g\n*   Walnuts: 10g\n\n**Lunch (400 kcal)**\n*   Large Salad: Mixed greens (100g), Spinach (50g)\n*   Lentils (cooked): 100g\n*   Quinoa (cooked): 75g\n*   Cucumber: 50g\n*   Bell Peppers: 50g\n*   Lemon Juice & Herbs: To taste\n*   Avocado: 30g\n\n**Dinner (450 kcal)**\n*   Tofu Stir-fry: Firm Tofu (120g)\n*   Broccoli: 100g\n*   Carrots: 75g\n*   Brown Rice (cooked): 100g\n*   Soy Sauce (low sodium): 15ml\n*   Ginger & Garlic: To taste\n\n**Snacks (200 kcal)**\n*   Apple: 1 medium (100g) with 2 tbsp Peanut Butter (32g)\n```",
+    "final_score": 6,
+    "reasoning": "The AI-generated solution successfully created a vegan meal plan tailored for weight loss. However, it lacks the crucial step of calculating the appropriate calorie and macronutrient targets based on the user's specific anthropometric data. This omission makes the plan's effectiveness for the user's stated goal uncertain without further verification. The dietary aspects are well-handled, but the personalization based on physical metrics is absent."
+  },
+  {
+    "athlete_info": {
+      "height_cm": 175,
+      "weight_kg": 75,
+      "goal": "Endurance Improvement",
+      "dietary_restrictions": "Low-FODMAP"
+    },
+    "output": "\n## One-Day Low-FODMAP Endurance Meal Plan\n\n**Estimated Daily Calories:** 2500-2800 kcal\n**Macro Breakdown:** Protein: 120-150g, Carbs: 350-400g, Fats: 80-100g\n\n**Breakfast (500-600 kcal):**\n\n*   Oatmeal (made with lactose-free milk/almond milk): 75g dry oats\n*   Banana: 50g (small, firm)\n*   Walnuts: 15g\n*   Protein Powder (low-FODMAP): 25g\n\n**Mid-Morning Snack (200-250 kcal):**\n\n*   Rice Cakes: 2\n*   Peanut Butter: 20g\n*   Small Orange: 1\n\n**Lunch (600-700 kcal):**\n\n*   Chicken Breast (grilled): 150g\n*   White Rice: 150g cooked\n*   Steamed Green Beans: 100g\n*   Olive Oil: 1 tbsp\n\n**Pre-Workout Snack (150-200 kcal - 60-90 mins before):**\n\n*   Gluten-Free Toast: 1 slice\n*   Jam (low-FODMAP - strawberry/raspberry): 20g\n\n**Dinner (700-800 kcal):**\n\n*   Salmon (baked): 150g\n*   Sweet Potato: 200g baked\n*   Spinach (saut\u00e9ed with olive oil): 100g\n*   Quinoa: 75g cooked\n\n**Evening Snack (200-300 kcal):**\n\n*   Lactose-Free Yogurt: 170g\n*   Blueberries: 50g\n*   Pumpkin Seeds: 15g\n\n\n\n",
+    "final_score": 7,
+    "reasoning": "The AI-generated meal plan is a good starting point, directly addressing the 'Low-FODMAP' restriction and offering a sensible structure for endurance goals. However, it could be improved with more precise macro targets and crucial advice on hydration, which is essential for athletic performance."
+  }
+]

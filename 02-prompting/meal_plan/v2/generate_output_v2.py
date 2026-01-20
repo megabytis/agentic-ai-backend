@@ -3,14 +3,11 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-from langchain.chat_models import init_chat_model
+from openai import OpenAI
 from langchain.messages import HumanMessage, AIMessage
 
-llm = init_chat_model(
-    model="google/gemma-3-27b-it:free",
-    model_provider="google",
-    api_key=API,
-    base_url="https://openrouter.ai/api/v1",
+llm = OpenAI(
+    api_key=os.getenv("OPENROUTER_API_KEY"), base_url="https://openrouter.ai/api/v1"
 )
 
 
@@ -32,10 +29,12 @@ def run_prompt(prompt_template, test_case):
         .replace("{{dietary_restrictions}}", test_case["dietary_restrictions"])
     )
 
-    message = [HumanMessage(content=prompt)]
-    response = llm.invoke(message)
+    response = llm.chat.completions.create(
+        model="google/gemma-3-27b-it:free",
+        messages=[HumanMessage(content=prompt)],
+    )
 
-    return response.content
+    return response.choices[0].message.content
 
 
 def run_test_case(prompt_template, test_case):
@@ -63,4 +62,4 @@ if __name__ == "__main__":
     with open("v2/outputs_v2.json", "w") as f:
         json.dump(results, f, indent=2)
 
-    print("Eval complete. Results saved to outputs_v1.json")
+    print("Eval complete. Results saved to outputs_v2.json")

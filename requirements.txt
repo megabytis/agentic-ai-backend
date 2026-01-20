@@ -1,2 +1,10 @@
-langchain-google-genai
+pandas
+numpy
+scikit-learn
+seaborn
+openai
+google-genai
+ollama
 langchain
+langchain-community
+langchain-openai

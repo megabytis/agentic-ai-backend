@@ -1,23 +1,19 @@
 import os
 import json
 from dotenv import load_dotenv
-load_dotenv()
-from langchain.chat_models import init_chat_model
 
-API = os.getenv("OPENROUTER_API_KEY")
-MODEL = "nvidia/nemotron-3-nano-30b-a3b:free"
+load_dotenv()
+from google import genai
 
 
 def chat(message, stop_sequence="```"):
     try:
-        llm = init_chat_model(
-            model=MODEL,
-            model_provider="nvidia",
-            api_key=API,
-            base_url="https://openrouter.ai/api/v1",
+        client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+        response = client.models.generate_content(
+            model="gemini-2.5-flash-lite", contents=f"{message}"
         )
-        response = llm.invoke(message)
-        return response.content
+        # print(f"Response: \n{response}")
+        return response.text
     except ValueError as e:
         print(e)
 
@@ -64,12 +60,18 @@ Example response shape:
         messages.append({"role": "assistant", "content": "```json"})
 
         result = chat(messages, stop_sequence="```")
+        cleaned_result = result.replace("```json", "").replace("```", "").strip()
+        print(f"Cleaned result content: {repr(cleaned_result)}")
 
-        cleaned_result = result.rstrip("`").strip()
+        if cleaned_result.startswith("'") and cleaned_result.endswith("'"):
+            cleaned_result = cleaned_result[1:-1]
+
+        cleaned_result = cleaned_result.replace("\\'", "'")
+
         parsed_result = json.loads(cleaned_result)
         eval_text.append(parsed_result)
 
-        def save_eval_text(eval_text, path="model_gradings_v1.json"):
+        def save_eval_text(eval_text, path="v2/gradings/model_gradings_v2.json"):
             with open(path, "w") as f:
                 json.dump(eval_text, f, indent=2)
 
@@ -80,7 +82,7 @@ Example response shape:
 with open("dataset.json", "r") as f:
     test_cases = json.load(f)
 
-with open("outputs_v1.json", "r") as f:
+with open("v2/outputs_v2.json", "r") as f:
     outputs = json.load(f)
 
 grade = grade_by_model(test_cases, outputs)
