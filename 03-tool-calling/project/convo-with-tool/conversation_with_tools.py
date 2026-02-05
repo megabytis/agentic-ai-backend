@@ -15,9 +15,7 @@ URL = "http://localhost:11434/v1"
 
 # Functions
 def get_current_time():
-    actual_time = datetime.now().strftime("%H:%M:%S")
-    print(f"🔧 DEBUG: get_current_time() called, returning: {actual_time}")
-    return actual_time
+    return datetime.now().strftime("%H:%M:%S")
 
 
 def get_current_date():
