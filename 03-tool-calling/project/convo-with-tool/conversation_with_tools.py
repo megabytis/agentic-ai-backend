@@ -4,13 +4,14 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from langchain.messages import HumanMessage
 from datetime import timedelta, datetime
+import random
 
 
 load_dotenv()
 
-API = "ollama"
-MODEL = "llama3.2:3b"
-URL = "http://localhost:11434/v1"
+API = os.getenv("OPENROUTER_API_KEY")
+MODEL = "qwen/qwen3-4b:free"
+URL = "https://openrouter.ai/api/v1"
 
 
 # Functions
@@ -26,10 +27,59 @@ def get_current_datetime():
     return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 
+def add_duration_to_datetime(base_datetime: str, duration: str) -> str:
+    """
+    Add duration to a datetime string.
+
+    Args:
+        base_datetime: "2026-02-05 22:30:00"
+        duration: "3 days", "2 hours", "30 minutes", "1 week"
+
+    Returns:
+        New datetime string
+    """
+
+    # Parsing base datetime
+    dt = datetime.strptime(base_datetime, "%Y-%m-%d %H:%M:%S")
+
+    # Parsing duration
+    if "day" in duration:
+        days = int(duration.split()[0])
+        dt = dt + timedelta(days=days)
+    elif "week" in duration:
+        weeks = int(duration.split()[0])
+        dt = dt + timedelta(weeks=weeks)
+    elif "hour" in duration:
+        hours = int(duration.split()[0])
+        dt = dt + timedelta(hours=hours)
+    elif "minute" in duration:
+        minutes = int(duration.split()[0])
+        dt = dt + timedelta(minutes=minutes)
+
+    return dt.strftime("%Y-%m-%d %H:%M:%S")
+
+
+def set_reminder(reminder_time: str, content: str) -> str:
+    """
+    Simulate setting a reminder
+
+    Args:
+        reminder_time: when to remind
+        content; what to remind about
+
+    Returns:
+        Confirmation message
+    """
+    print(f"🔔 Reminder Set: At {reminder_time} - '{content}'")
+    return f"🔔 Reminder Set: At {reminder_time} - '{content}'"
+
+
 function_map = {
     "get_current_time": get_current_time,
     "get_current_date": get_current_date,
     "get_current_datetime": get_current_datetime,
+    "add_duration_to_datetime": add_duration_to_datetime,
+    "set_reminder": set_reminder,
 }
 
 # Function Schemas
@@ -56,6 +106,48 @@ tools = [
             "name": "get_current_datetime",
             "description": "Get current date and time in YYYY-MM-DD HH:MM:SS format",
             "parameters": {"type": "object", "properties": {}},
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "add_duration_to_datetime",
+            "description": "Add a duration to a datetime. Format: YYYY-MM-DD HH:MM:SS",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "base_datetime": {
+                        "type": "string",
+                        "description": "Base datetime in YYYY-MM-DD HH:MM:SS format",
+                    },
+                    "duration": {
+                        "type": "string",
+                        "description": "Duration to add (e.g., '3 days', '2 hours', '30 minutes', '1 week')",
+                    },
+                },
+                "required": ["base_datetime", "duration"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "set_reminder",
+            "description": "Set a reminder for a specific time",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "reminder_time": {
+                        "type": "string",
+                        "description": "When to remind (YYYY-MM-DD HH:MM:SS format)",
+                    },
+                    "content": {
+                        "type": "string",
+                        "description": "What to remind about",
+                    },
+                },
+                "required": ["reminder_time", "content"],
+            },
         },
     },
 ]
