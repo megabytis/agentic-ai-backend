@@ -10,9 +10,8 @@ import random
 load_dotenv()
 
 API = os.getenv("OPENROUTER_API_KEY")
-MODEL = "qwen/qwen3-4b:free"
-URL = "https://openrouter.ai/api/v1"
-
+MODEL = "openai/gpt-oss-120b:free"
+URL = "https://openrouter.ai/api/v1/"
 
 # Functions
 def get_current_time():
@@ -284,3 +283,4 @@ def start_chatbot():
 
 if __name__ == "__main__":
     start_chatbot()
+
