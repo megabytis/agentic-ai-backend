@@ -11,7 +11,7 @@ import sys
 load_dotenv()
 
 API = os.getenv("OPENROUTER_API_KEY")
-MODEL = "meta-llama/llama-3.3-70b-instruct:free"
+MODEL = "stepfun/step-3.5-flash:free"
 URL = "https://openrouter.ai/api/v1/"
 
 
@@ -39,6 +39,9 @@ def add_duration_to_datetime(base_datetime: str, duration: str) -> str:
     Returns:
         New datetime string
     """
+
+    if not base_datetime:
+        base_datetime = get_current_datetime()
 
     # Parsing base datetime
     dt = datetime.strptime(base_datetime, "%Y-%m-%d %H:%M:%S")
@@ -269,7 +272,6 @@ def execute_tool_calls(tool_calls):
             else {}
         )
         func_name = tool_call.function.name
-        print(f"Tool name: {func_name}")
 
         if func_name == "run_batch":
             # Run batch and format EACH tool's result separately
