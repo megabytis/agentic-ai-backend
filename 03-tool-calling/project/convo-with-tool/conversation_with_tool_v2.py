@@ -11,7 +11,7 @@ import sys
 load_dotenv()
 
 API = os.getenv("OPENROUTER_API_KEY")
-MODEL = "nvidia/nemotron-3-nano-30b-a3b:free"
+MODEL = "meta-llama/llama-3.3-70b-instruct:free"
 URL = "https://openrouter.ai/api/v1/"
 
 
@@ -71,7 +71,6 @@ def set_reminder(reminder_time: str, content: str) -> str:
     Returns:
         Confirmation message
     """
-    print(f"🔔 Reminder Set: At {reminder_time} - '{content}'")
     return f"🔔 Reminder Set: At {reminder_time} - '{content}'"
 
 
@@ -82,11 +81,13 @@ def run_batch(invocations):
     for invocation in invocations:
         tool_name = invocation["name"]
         tool_args = invocation["arguments"]
+        if isinstance(tool_args, str):
+            tool_args = json.loads(tool_args)
 
         try:
             # calling the actual tool
             tool_func = function_map.get(tool_name)
-            if tool_name:
+            if tool_func:
                 output = tool_func(**tool_args)
                 results.append({"tool": tool_name, "success": True, "output": output})
             else:
@@ -197,20 +198,26 @@ batch_tool_schema = {
                             "name": {
                                 "type": "string",
                                 "description": "Name of tool to run",
-                                "enum": ["get_current_time", "get_current_date", "get_current_datetime", "add_duration_to_datetime", "set_reminder"]
+                                "enum": [
+                                    "get_current_time",
+                                    "get_current_date",
+                                    "get_current_datetime",
+                                    "add_duration_to_datetime",
+                                    "set_reminder",
+                                ],
                             },
                             "arguments": {
                                 "type": "object",
-                                "description": "Arguments for the tool"
-                            }
+                                "description": "Arguments for the tool",
+                            },
                         },
-                        "required": ["name", "arguments"]
-                    }
+                        "required": ["name", "arguments"],
+                    },
                 }
             },
-            "required": ["invocations"]
-        }
-    }
+            "required": ["invocations"],
+        },
+    },
 }
 
 tools.append(batch_tool_schema)
@@ -253,55 +260,56 @@ print("👋 Welcome! I'm your chatbot. Type '/bye' to end the chat.\n")
 
 
 def execute_tool_calls(tool_calls):
-    """Execute all tool calls in a response"""
     results = []
 
     for tool_call in tool_calls:
-        args = {}
-        if tool_call.function.arguments:
-            args = json.loads(tool_call.function.arguments)
-
-        # Executing
+        args = (
+            json.loads(tool_call.function.arguments)
+            if tool_call.function.arguments
+            else {}
+        )
         func_name = tool_call.function.name
-        func = function_map.get(func_name)
-        if func:
-            try:
-                result = func(**args)
+        print(f"Tool name: {func_name}")
 
-                # Special handling for BATCH TOOL
-                if func_name == "run_batch":
-                    # Then batch tool will return a list or results
-                    # Need to format them properly for AI
-                    # formatted_results = []
-                    # for batch_result in result:
-                    #     formatted_results.append(
-                    #         f"{batch_result['tool']}: {batch_result.get('output','No output')}"
-                    #     )
+        if func_name == "run_batch":
+            # Run batch and format EACH tool's result separately
+            batch_results = run_batch(**args)
 
-                    # results.append(
-                    #     {
-                    #         "tool_call_id": tool_call.id,
-                    #         "content": "\n".join(formatted_results),
-                    #     }
-                    # )
-                    results.append(
-                        {"tool_call_id": tool_call.id, "content": json.dumps(result)}
-                    )
-                else:
-                    results.append(
-                        {"tool_call_id": tool_call.id, "content": str(result)}
-                    )
-            except Exception as e:
-                results.append(
-                    {"tool_call_id": tool_call.id, "content": f"Error: {str(e)}"}
-                )
-        else:
+            # Format each tool's result
+            formatted_batch = []
+            for batch_item in batch_results:
+                tool_name = batch_item["tool"]
+                status = "✅" if batch_item["success"] else "❌"
+                output = batch_item.get("output", batch_item.get("error", "No output"))
+                formatted_batch.append(f"{status} {tool_name}: {output}")
+
             results.append(
                 {
                     "tool_call_id": tool_call.id,
-                    "content": f"Error: Function {func_name} not found",
+                    "content": "\n".join(formatted_batch),  # Send readable text
                 }
             )
+        else:
+            # Normal single tool execution
+            func = function_map.get(func_name)
+            if func:
+                try:
+                    result = func(**args)
+                    results.append(
+                        {"tool_call_id": tool_call.id, "content": str(result)}
+                    )
+                except Exception as e:
+                    results.append(
+                        {"tool_call_id": tool_call.id, "content": f"Error: {str(e)}"}
+                    )
+            else:
+                results.append(
+                    {
+                        "tool_call_id": tool_call.id,
+                        "content": f"Error: Function {func_name} not found",
+                    }
+                )
+
     return results
 
 
@@ -351,11 +359,6 @@ def run_conversation(user_input):
                         "content": result["content"],
                     }
                 )
-
-            # Getting final response
-            response2 = chat(message=messages, tools=tools)
-            # print(f"Bot: {response2.choices[0].message.content}\n")
-            add_assistant_message(response2.choices[0].message.content)
 
             continue
 
