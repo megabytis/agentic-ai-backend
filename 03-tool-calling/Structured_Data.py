@@ -1,3 +1,24 @@
+# NOTE :
+
+'''
+
+using tools to extract structured data (JSON) instead of prompt-based JSON extraction.
+
+Key concept: Creating a "dummy tool" whose input schema defines our desired JSON structure. Forcing the AI to call it, then extract the arguments as our structured data.
+
+Benefits over prompt-based JSON:
+- More reliable (follows strict schema)
+- No stop sequences needed
+- Built-in validation via JSON schema
+
+Use cases in your learning:
+- Extract entities from text
+- Parse user queries into structured commands
+- Validate and normalize inputs
+- Generate structured reports
+
+'''
+
 import json
 import os
 from dotenv import load_dotenv
