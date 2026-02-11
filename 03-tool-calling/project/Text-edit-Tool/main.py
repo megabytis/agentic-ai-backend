@@ -14,9 +14,6 @@ MODEL = "stepfun/step-3.5-flash:free"
 import os
 import json
 
-# Add these to your existing functions section
-
-
 def read_file(filepath: str) -> str:
     """Read contents of a file"""
     try:
@@ -289,7 +286,6 @@ batch_tool_schema = {
 }
 
 tools.append(batch_tool_schema)
-
 
 # CHAT
 messages = [
