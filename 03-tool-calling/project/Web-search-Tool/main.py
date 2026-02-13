@@ -14,7 +14,7 @@ import time
 load_dotenv()
 
 API = os.getenv("OPENROUTER_API_KEY")
-MODEL = "stepfun/step-3.5-flash:free"
+MODEL = "meta-llama/llama-3.3-70b-instruct:free"
 URL = "https://openrouter.ai/api/v1/"
 
 
@@ -146,14 +146,14 @@ def web_search(query: str, max_results: int = 10, allowed_domains: list = None) 
                 if allowed_domains:
                     if not any(domain in url for domain in allowed_domains):
                         continue
-                    
+
                 formatted.append(f"{i}. {title}")
                 formatted.append(f"  {body}")
                 formatted.append(f"  Source: {url}\n")
 
             if not formatted:
                 return f"No results found from domains: {allowed_domains}"
-            
+
             print(f"    Found {len(formatted)//3} results")
             return "\n".join(formatted)
 
@@ -336,16 +336,34 @@ def add_user_message(text):
     messages.append(user_message)
 
 
-def chat_stream(message, tools=None, tool_choice=None):
+def chat_stream(
+    message,
+    tools=None,
+    tool_choice=None,
+    thinking=False,
+    thinking_budget=2048,
+    max_tokens=8000,
+):
+    """Streaming version with thinking support"""
     try:
 
         client = OpenAI(api_key=API, base_url=URL)
 
-        params = {"model": MODEL, "messages": message, "stream": True}
+        params = {
+            "model": MODEL,
+            "messages": message,
+            "stream": True,
+            "max_tokens": max_tokens,  # Must be > thinking_budget
+        }
+
         if tools:
             params["tools"] = tools
         if tool_choice:
             params["tool_choice"] = tool_choice
+
+        # Adding thinking
+        if thinking:
+            params["thinking"] = {"type": "enabled", "budget_tokens": thinking_budget}
 
         stream = client.chat.completions.create(**params)
 
@@ -412,14 +430,30 @@ def execute_tool_calls(tool_calls):
     return results
 
 
-def handle_streaming_tools(user_input):
+def handle_streaming_tools(user_input, thinking=False):
     """Complete streaming conversation with tool execution"""
+
+    if thinking:
+        enhanced_input = f"""Let's think through this step by step: 
+        
+        Question: {user_input}
+        
+        First, I'll break this down:
+        """
+    else:
+        enhanced_input = user_input
 
     # Add user message to history
     add_user_message(user_input)
 
     # First API call - get initial response with potential tool calls
-    stream = chat_stream(message=messages, tools=tools)
+    stream = chat_stream(
+        message=messages,
+        tools=tools,
+        thinking=thinking,
+        thinking_budget=2048,
+        max_tokens=8000,
+    )
 
     tool_arguments = {}
     current_tool_name = None
@@ -427,6 +461,22 @@ def handle_streaming_tools(user_input):
     response_text = ""
 
     for chunk in stream:
+        # Checking for thinking content
+        if (
+            hasattr(chunk.choices[0].delta, "thinking")
+            and chunk.choices[0].delta.thinking
+        ):
+            thinking_text = chunk.choices[0].delta.thinking
+            print(f"\n💭 {thinking_text}", end="", flush=True)
+
+        # Checking for reasoning (alternative name of thinking)
+        elif (
+            hasattr(chunk.choices[0].delta, "reasoning")
+            and chunk.choices[0].delta.reasoning
+        ):
+            reasoning_text = chunk.choices[0].delta.reasoning
+            print(f"\n💭 {reasoning_text}", end="", flush=True)
+
         if chunk.choices[0].delta and hasattr(chunk.choices[0].delta, "tool_calls"):
             if chunk.choices[0].delta.tool_calls:
                 tool_call_delta = chunk.choices[0].delta.tool_calls[0]
@@ -501,16 +551,22 @@ def handle_streaming_tools(user_input):
 
 
 def start_chatbot():
+    thinking_enabled = False
+
     while True:
         user_input = input("You: ")
         if user_input.lower() == "/bye":
             print("Goodbye!")
             break
+        elif user_input.lower() == "/think":
+            thinking_enabled = not thinking_enabled
+            print(f"Thinking mode: {'ON' if thinking_enabled else 'OFF'}")
+            continue
 
         print("Bot: ", end="", flush=True)
 
         try:
-            handle_streaming_tools(user_input=user_input)
+            handle_streaming_tools(user_input=user_input, thinking=thinking_enabled)
             print()
 
         except Exception as e:
