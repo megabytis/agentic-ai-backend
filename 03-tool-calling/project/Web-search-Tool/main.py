@@ -7,12 +7,14 @@ from datetime import timedelta, datetime
 import random
 import sys
 from ddgs import DDGS
+from datetime import datetime
+import time
 
 
 load_dotenv()
 
 API = os.getenv("OPENROUTER_API_KEY")
-MODEL = "meta-llama/llama-3.3-70b-instruct:free"
+MODEL = "stepfun/step-3.5-flash:free"
 URL = "https://openrouter.ai/api/v1/"
 
 
@@ -106,15 +108,60 @@ def run_batch(invocations):
             results.append({"tool": tool_name, "success": False, "error": str(e)})
     return results
 
-def web_search(query: str,max_results:int=5) -> str:
-    """Search using DuckDuckGo"""
+
+def web_search(query: str, max_results: int = 10, allowed_domains: list = None) -> str:
+    """Search using DuckDuckGo & optionally restrict to specific domains"""
+
+    # appending current year if not present
+    current_year = datetime.now().year
+    if str(current_year) not in query:
+        query = f"{query} {current_year}"
+
+    # Now adding domain restrictions to query if specified
+    original_query = query
+    if allowed_domains:
+        domain_query = " OR ".join([f"site: {domain}" for domain in allowed_domains])
+
+        query = f"({original_query}) {domain_query}"
+
+    print(f"\n🔍 WEB SEARCH: '{query}'")
+
+    if allowed_domains:
+        print(f"Restricted to domains: {', '.join(allowed_domains)}")
+        print(f"Max results: {max_results}")
 
     try:
         with DDGS() as ddgs:
-            results = list(ddgs.text(query, max_results=5))
-            return "\n".join([f"{r['title']}:{r['body']}" for r in results])
+            results = list(ddgs.text(query, max_results=max_results))
+
+            if not results:
+                return "No search results found"
+
+            formatted = []
+            for i, r in enumerate(results, 1):
+                title = r.get("title", "No title")
+                body = r.get("body", "No content")
+                url = r.get("href", "No URL")
+
+                if allowed_domains:
+                    if not any(domain in url for domain in allowed_domains):
+                        continue
+                    
+                formatted.append(f"{i}. {title}")
+                formatted.append(f"  {body}")
+                formatted.append(f"  Source: {url}\n")
+
+            if not formatted:
+                return f"No results found from domains: {allowed_domains}"
+            
+            print(f"    Found {len(formatted)//3} results")
+            return "\n".join(formatted)
+
+    except ImportError:
+        return "ERROR: ddgs page package is not installed. Run: pip install ddgs"
     except Exception as e:
-        return f"{type(e).__name__}: {e}"
+        return f"Search failed: {str(e)}"
+
 
 function_map = {
     "get_current_time": get_current_time,
@@ -123,7 +170,7 @@ function_map = {
     "add_duration_to_datetime": add_duration_to_datetime,
     "set_reminder": set_reminder,
     "run_batch": run_batch,
-    "web_search":web_search
+    "web_search": web_search,
 }
 
 # Function Schemas
@@ -241,11 +288,20 @@ tools.append(
         "type": "function",
         "function": {
             "name": "web_search",
-            "description": "Search the web for current information",
+            "description": "Search the web for current information, optionally restrict to specific domains",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "query": {"type": "string", "description": "Search query"},
+                    "max_results": {
+                        "type": "integer",
+                        "description": "Maximum number of results to return (default: 10)",
+                    },
+                    "allowed_domains": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "Restrict search to these domains (e.g., ['nih.gov', 'reuters.com'])",
+                    },
                 },
                 "required": ["query"],
             },
@@ -265,7 +321,7 @@ WHEN YOU RECEIVE SEARCH RESULTS:
 3. ANSWER the user's question DIRECTLY
 4. NEVER say "let me search more" - you already have the information
 
-Use this to filter relevant results."""
+Use this to filter relevant results.""",
     },
 ]
 
@@ -437,7 +493,7 @@ def handle_streaming_tools(user_input):
             if chunk.choices[0].delta and chunk.choices[0].delta.content:
                 final_text += chunk.choices[0].delta.content
                 print(chunk.choices[0].delta.content, end="", flush=True)
-                
+
         if final_text:
             add_assistant_message(final_text)
 
