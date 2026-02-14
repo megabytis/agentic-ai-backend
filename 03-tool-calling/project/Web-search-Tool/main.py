@@ -2,14 +2,9 @@ import json
 import os
 from dotenv import load_dotenv
 from openai import OpenAI
-from langchain.messages import HumanMessage
 from datetime import timedelta, datetime
-import random
 import sys
 from ddgs import DDGS
-from datetime import datetime
-import time
-
 
 load_dotenv()
 
