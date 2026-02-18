@@ -7,6 +7,7 @@ import sys
 from ddgs import DDGS
 import base64
 from pathlib import Path
+import PyPDF2
 
 load_dotenv()
 
@@ -179,9 +180,9 @@ def create_pdf_message(pdf_path, prompt_text):
             {
                 "type": "document",
                 "document": {
-                    "type":"base64",
-                    "media_type":'application/pdf',
-                    "data": pdf_base64
+                    "type": "base64",
+                    "media_type": "application/pdf",
+                    "data": pdf_base64,
                 },
             },
             {"type": "text", "text": prompt_text},
@@ -191,18 +192,46 @@ def create_pdf_message(pdf_path, prompt_text):
     return message
 
 
+def extract_text_from_pdf(pdf_path, max_pages=5):
+    """Extracting text from PDF locally"""
+    try:
+        text = ""
+        with open(pdf_path, "rb") as file:
+            reader = PyPDF2.PdfReader(file)
+            for i, page in enumerate(reader.pages[:max_pages]):
+                text += f"\n-- Page {i+1} --\n"
+                text += page.extract_text()
+            return text
+    except Exception as e:
+        return f"Error extracting PDF: {e}"
+
+
 def analyze_pdf(pdf_path, prompt_text):
-    """Sending PDF to AI for analysis"""
+    """Sending PDF to AI for analysis after extracting"""
+
+    # Extracting text first locally
+    pdf_text = extract_text_from_pdf(pdf_path=pdf_path)
+
+    if pdf_text.startswith("Error"):
+        return pdf_text
+
+    # Sending as plain text (no document)
+    enhanced_prompt = f"""
+    Here is the content of a PDF file:
+    
+    {pdf_text:8000}
+    
+    Based on this document, {prompt_text}
+    """
 
     # Creating message with pdf
-    pdf_message = create_pdf_message(pdf_path=pdf_path, prompt_text=prompt_text)
+    # pdf_message = create_pdf_message(pdf_path=pdf_path, prompt_text=prompt_text)
 
     # Using temporary message
-    temp_messages = [pdf_message]
+    temp_messages = [{"role":'user',"content":enhanced_prompt}]
 
     print(f"\n📄 Analyzing pdf: {pdf_path}")
     print(f"📝 Prompt: {prompt_text[:50]}...\n")
-
     print("🤖 Response: ", end="", flush=True)
 
     response_text = ""
