@@ -106,3 +106,67 @@ messages.append(assistant_response)
 **Your existing code already does client-side "caching"** by reusing the `messages` list across turns. This saves tokens but not compute.
 
 **Check your specific model's docs** to see if prompt caching is supported on OpenRouter for that model.
+
+## Rules of Prompt Caching
+
+### 1. **Cache Breakpoints**
+
+- Add `cache_control: {"type": "ephemeral"}` to any block
+- Everything **before and including** that block gets cached
+- Must use **long-form** syntax (not the shorthand string)
+
+### 2. **Cache Duration**
+
+- Cache lasts for **1 hour** only
+- After that, it's gone and you pay full price again
+
+### 3. **Order Matters**
+
+Content is joined in this order:
+
+1. **Tools** (if any)
+2. **System prompt**
+3. **Messages**
+
+Where you place breakpoints determines what gets cached.
+
+### 4. **Multiple Breakpoints**
+
+- Can have up to **4 breakpoints** per request
+- Each breakpoint creates a separate cacheable segment
+- If earlier content changes, later caches remain valid
+
+### 5. **Minimum Size**
+
+- Must cache at least **1024 tokens**
+- Tiny blocks won't be cached (e.g., just "hi there")
+
+### 6. **What Can Be Cached**
+
+- ✅ Text blocks
+- ✅ Image blocks
+- ✅ Tool use/results
+- ✅ Tool schemas
+- ✅ System prompts
+
+### 7. **Cache Invalidation**
+
+Cache breaks if ANY content **before a breakpoint** changes:
+
+- Even one word difference = cache miss
+- Content after breakpoint can change freely
+
+---
+
+## Summary Cheat Sheet
+
+| Rule                | Detail                                 |
+| ------------------- | -------------------------------------- |
+| **Syntax**          | `cache_control: {"type": "ephemeral"}` |
+| **Duration**        | 1 hour                                 |
+| **Max breakpoints** | 4 per request                          |
+| **Min tokens**      | 1024                                   |
+| **Order**           | Tools → System → Messages              |
+| **Invalidation**    | Any change before breakpoint           |
+
+**Bottom line:** Just understand these rules. You'll use them if you ever work with Claude or another provider that supports prompt caching.
