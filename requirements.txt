@@ -11,3 +11,4 @@ langchain-openai
 anthropic
 ddgs
 pyPDF2
+fastembed
