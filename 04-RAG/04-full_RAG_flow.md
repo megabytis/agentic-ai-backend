@@ -53,7 +53,7 @@ Adjust numbers so they all have "length" of 1
 # What happens:
 Save all embeddings in a special database
 
-# REMEMBER: Vector DB = A filing cabinet optimized for number lists
+# REMEMBER: Vector DB = A database optimized for storing and comparing long list of numbers - like embeddings
 ```
 
 ### **STEP 5: PAUSE (Wait for User)** ⏸️
@@ -94,11 +94,18 @@ Question vs Software chunk: [0.89,0.10] vs [0.30,0.97] → 0.98 similarity ✓
 
 ### **Cosine Similarity** (The Important One)
 
+![Cosine similarity](./images/cosine_similarity.png)
+i.e.
+Small angle between vectors = Similar meaning
+Large angle between vectors = Different meaning
+
 ```
-Score between -1 and 1
-1 = Perfect match
-0 = Not related
--1 = Opposite meaning
+# Cosine Similarity tells :
+1.0 = "Exactly the same meaning"
+0.7-0.9 = "Very similar"
+0.4-0.6 = "Somewhat related"
+0.0-0.3 = "Not really related"
+Negative = "Opposite meanings"
 
 Example:
 "cat" vs "kitten" → 0.85 (similar!)
@@ -187,5 +194,3 @@ User Question → Numbers → Compare → Best Match → AI → Answer!
 
 REMEMBER: The computer finds meaning by finding similar NUMBER PATTERNS
 ```
-
-**Next up:** We'll actually implement this in code! Ready when you are! 🚀
