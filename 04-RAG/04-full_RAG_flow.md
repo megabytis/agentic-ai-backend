@@ -1,11 +1,11 @@
-# The Full RAG Flow - A Complete Picture
+## The Complete RAG Flow
 
-## The Big Picture
+### The Big Picture (What RAG Really Does)
 
 ```
 [Your Documents] → [Chunks] → [Embeddings] → [Vector DB]
                                                   ↓
-[User Question] → [Embedding] → [Search DB] → [Best Match] → [Prompt] → [AI Answer]
+[User Question] → [Embedding] → [Semantic Search] → [Best Matches] → [Context] → [LLM] → [Answer]
 ```
 
 ---
@@ -28,32 +28,36 @@ Source Document → Split into smaller pieces
 
 ```python
 # What happens:
-Each chunk → Convert to numbers
+Each chunk → Convert to numbers (vector)
 
-# Example (simplified):
-"Medical research" → [0.97, 0.34]  # [medicine_score, software_score]
-"Software engineering" → [0.30, 0.97]  # [medicine_score, software_score]
+# Example (simplified - real embeddings have 384-1536 dimensions!):
+"Medical research" → [0.97, 0.34, 0.12, -0.45, ...]
+"Software engineering" → [0.30, 0.97, 0.89, 0.23, ...]
 
-# REMEMBER: Each chunk becomes a list of numbers (its "fingerprint")
+# REMEMBER: Each chunk becomes a unique "fingerprint" of numbers
 ```
 
 ### **STEP 3: Normalize** 📏
 
 ```python
 # What happens:
-Adjust numbers so they all have "length" of 1
+Adjust vectors so they all have length = 1
 
-# Why? So we can compare fairly
-# REMEMBER: Like scaling all test scores to be out of 100
+# Why? So we can compare fairly (like scaling test scores to be out of 100)
 ```
 
 ### **STEP 4: Store in Vector Database** 💾
 
 ```python
 # What happens:
-Save all embeddings in a special database
+Save (embedding + original text) together
 
-# REMEMBER: Vector DB = A database optimized for storing and comparing long list of numbers - like embeddings
+vector_db.add(
+    embedding=[0.97, 0.34, ...],
+    metadata={"text": "Medical research section..."}
+)
+
+# REMEMBER: Always store the text with the vector!
 ```
 
 ### **STEP 5: PAUSE (Wait for User)** ⏸️
@@ -68,129 +72,128 @@ Save all embeddings in a special database
 ```python
 user_question = "What did software engineering do this year?"
 
-# Convert to embedding (same process!)
-question_embedding = [0.89, 0.10]  # [medicine_score, software_score]
+# Convert question to embedding (same process!)
+question_embedding = [0.89, 0.10, 0.92, 0.31, ...]
 
 # REMEMBER: Questions become numbers too!
 ```
 
-### **STEP 7: Find Matches** 🔍
+### **STEP 7: Semantic Search - Find Matches** 🔍
 
 ```python
-# Compare question with ALL stored chunks
-# Use COSINE SIMILARITY (the magic math!)
+# THIS IS THE KEY STEP! Three ways to search:
 
+# 1️⃣ SEMANTIC SEARCH (What RAG uses) ✅
 """
-Question vs Medical chunk: [0.89,0.10] vs [0.97,0.34] → 0.72 similarity
-Question vs Software chunk: [0.89,0.10] vs [0.30,0.97] → 0.98 similarity ✓
+Compares MEANING using vector math
+
+Question embedding → Compare with ALL chunk embeddings
+Find chunks with closest vectors
+
+Question: "engineering team achievements"
+Finds: "shipped 127 features", "launched AI engine", "fixed 892 bugs"
+EVEN IF different words are used!
 """
 
-# REMEMBER: Pick the chunk with HIGHEST similarity score!
+# 2️⃣ LEXICAL SEARCH (Traditional - NOT what RAG uses) ❌
+"""
+Matches exact words only
+
+Question: "engineering team achievements"
+Finds: ONLY chunks containing "engineering", "team", or "achievements"
+Misses: "shipped features", "launched products"
+"""
+
+# 3️⃣ HYBRID SEARCH (Combines both)
+"""
+Uses semantic + lexical together
+Better but more complex
+"""
 ```
 
 ---
 
-## The Math we NEED to Know
-
-### **Cosine Similarity** (The Important One)
+## The Search Math
 
 ![Cosine similarity](./images/cosine_similarity.png)
-i.e.
-Small angle between vectors = Similar meaning
-Large angle between vectors = Different meaning
+
+### **Cosine Similarity** = How close two vectors are:
 
 ```
-# Cosine Similarity tells :
-1.0 = "Exactly the same meaning"
-0.7-0.9 = "Very similar"
-0.4-0.6 = "Somewhat related"
-0.0-0.3 = "Not really related"
-Negative = "Opposite meanings"
-
-Example:
-"cat" vs "kitten" → 0.85 (similar!)
-"cat" vs "car" → 0.32 (kinda related)
-"cat" vs "ocean" → -0.12 (not related)
-```
-
-### **Cosine Distance** (Just FYI)
-
-```
-distance = 1 - similarity
-
-So if similarity = 0.98
-Then distance = 0.02 (small number = good match!)
-
-REMEMBER: Documentation uses both terms - don't get confused!
+Perfect match:    ●───●  = 1.0
+Close match:      ●──●    = 0.8
+Somewhat related: ●─●     = 0.5
+Not related:      ●    ●  = 0.2
+Opposite:         ●────●  = -1.0
 ```
 
 ---
 
-## Visual Memory Aid 🎨
+## Semantic vs Lexical - Why RAG Uses Semantic
+
+| Aspect      | Lexical Search          | Semantic Search (RAG)                      |
+| ----------- | ----------------------- | ------------------------------------------ |
+| **Matches** | Exact words only        | Meaning & concepts                         |
+| **Example** | "car" finds only "car"  | "car" finds "car", "automobile", "vehicle" |
+| **Misses**  | Synonyms, related terms | Rarely misses related content              |
+| **Speed**   | Very fast               | Fast                                       |
+| **Quality** | Low                     | High                                       |
+
+**Example in action:**
 
 ```
-                    ● Software Engineering (0.30, 0.97)
-                   /
-                  /
-                 /
-                ● User Question (0.89, 0.10)
-               /
-              /
-             ● Medical Research (0.97, 0.34)
+Query: "engineering achievements"
 
-The closer two points are on the circle, the more similar!
+Lexical search finds:
+❌ "engineering" - maybe not there
+❌ "achievements" - maybe not there
+Result: NOTHING!
+
+Semantic search finds:
+✅ "shipped 127 features"
+✅ "launched AI engine"
+✅ "fixed 892 bugs"
+Result: PERFECT MATCHES!
 ```
 
 ---
 
-## What You MUST Remember (Cheat Sheet) 📝
+## What to Remember (Cheat Sheet) 📝
 
 ```python
-# THE COMPLETE RAG FLOW - Just 7 Steps!
+# THE COMPLETE RAG FLOW
 
 # PRE-PROCESSING (Do once)
-# 1. Chunk your documents
-chunks = ["chunk1", "chunk2", "chunk3"]
-
-# 2. Create embeddings
-embeddings = [embed(chunk) for chunk in chunks]  # Numbers!
-
-# 3. Normalize (auto-magic, don't worry)
-# 4. Store in vector database
+chunks = split_document(text)                    # 1. Chunk
+embeddings = embed(chunks)                       # 2. Embed
+vector_db.store(embeddings, chunks)              # 3. Store
 
 # AT QUERY TIME (Do for each question)
-# 5. User asks question
-question = "What happened in software?"
-
-# 6. Embed the question
-q_emb = embed(question)
-
-# 7. Find closest match
-best_chunk = vector_db.search(q_emb)  # Finds most similar!
-
-# FINAL: Send to AI
-prompt = f"Context: {best_chunk}\nQuestion: {question}"
-ai_answer = claude.complete(prompt)
+question_emb = embed(user_question)               # 4. Embed question
+matches = vector_db.semantic_search(question_emb) # 5. Semantic search
+context = [match.text for match in matches]       # 6. Get relevant text
+prompt = f"Context: {context}\nQuestion: {user_question}"
+answer = llm.complete(prompt)                     # 7. Generate answer
 ```
 
 ---
 
 ## Key Takeaways 🎯
 
-1. **Pre-processing** (chunk + embed) happens **ONCE**
-2. **Query time** (embed question + search) happens for **EACH question**
-3. **Vector database** stores numbers and finds closest matches
-4. **Cosine similarity** = how we measure "closeness" (1 = perfect match)
-5. **Final step**: Give best chunk + question to AI for answer
+1. **Semantic search** = finding meaning, not just words
+2. **Cosine similarity** = how close two meanings are (0 to 1)
+3. **Higher similarity** = more relevant (0.8+ is great!)
+4. **Always store text with vectors** - numbers alone are useless
+5. **RAG is just**: Find relevant chunks → Give to LLM → Get answer
 
 ---
 
 ## The 30-Second Summary ⏱️
 
 ```
-Documents → Chunks → Numbers → Store in Vector DB
+Documents → Chunks → Numbers → Vector DB
                         ↓
-User Question → Numbers → Compare → Best Match → AI → Answer!
+Question → Numbers → SEMANTIC SEARCH → Best Matches → LLM → Answer!
 
-REMEMBER: The computer finds meaning by finding similar NUMBER PATTERNS
+REMEMBER: Semantic search finds MEANING, not just words!
 ```
