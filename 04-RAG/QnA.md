@@ -32,7 +32,7 @@
 
 # RAG Pipeline Implementation
 
-### Outline the basic steps involved in building a RAG workflow, from a user asking a question to the model generating a response !
+### Q6. Outline the basic steps involved in building a RAG workflow, from a user asking a question to the model generating a response !
 
 ```
 Documents → Chunks → Numbers → Vector DB
@@ -40,7 +40,7 @@ Documents → Chunks → Numbers → Vector DB
 Question → Numbers → SEMANTIC SEARCH → Best Matches → LLM → Answer!
 ```
 
-### Now, let's think about the practical aspects of putting this into action. When you're implementing this RAG workflow, what are some of the key components or tools you would need to set up and integrate?
+### Q7. Now, let's think about the practical aspects of putting this into action. When you're implementing this RAG workflow, what are some of the key components or tools you would need to set up and integrate?
 
 - first of all manually create a function or use laregly used frameorks like langchain / llamaindex, which will breakdown out document of large text into chunks using whatever strategy we wanna use for makin chunks
 - Then i'll use vector database, which is specifically designed to store and efficiently query these high-dimensional embeddings. This is a crucial component for enabling fast and accurate semantic search in your RAG pipeline.
@@ -48,7 +48,7 @@ Question → Numbers → SEMANTIC SEARCH → Best Matches → LLM → Answer!
 
 # Optimizing RAG Performance
 
-### When you're trying to make your RAG system perform better, what are some of the parameters or aspects you might consider tuning or adjusting?
+### Q8. When you're trying to make your RAG system perform better, what are some of the parameters or aspects you might consider tuning or adjusting?
 
 - To optimize RAG, tune these in order:
   1. Chunk size & overlap (get the pieces right)
@@ -57,7 +57,7 @@ Question → Numbers → SEMANTIC SEARCH → Best Matches → LLM → Answer!
   4. Hybrid search & diversity (get varied pieces)
   5. Prompt (use the pieces well)
 
-### Chunk size and overlap. Why are these two parameters so important, and what are the trade-offs you might consider when deciding on their values?
+### Q9. Chunk size and overlap. Why are these two parameters so important, and what are the trade-offs you might consider when deciding on their values?
 
 - chunk size matters cuz, if we'll do too small chunk then will get crumbs i.e. no context, for too big chunk we'll get the more than the necessary context i.e. too much noise, for just right chunks we'll get enough context , which is not too much noise
 
@@ -65,4 +65,43 @@ Question → Numbers → SEMANTIC SEARCH → Best Matches → LLM → Answer!
 
 > **This deep understanding of chunking parameters is vital for Optimizing RAG Performance.**
 
-# Identifying RAG Failure Modes: Recognizing and solving common issues in RAG systems.
+### Q10. How does selecting a different embedding model impact the performance of your RAG system?
+
+A superior embedding model can indeed lead to:
+
+- **Better understanding of meaning**: It generates more nuanced and semantically rich numerical representations of your text.
+- **More relevant chunks retrieved**: When the query and document chunks are embedded more accurately, the similarity search (like cosine similarity) is much more effective at finding truly relevant information.
+- **Better answers**: With more relevant context provided to the LLM, the generated responses will naturally be more accurate, comprehensive, and helpful.
+
+> **Better embedding model = Better understanding of meaning = More relevant chunks retrieved = Better answers**
+
+# Identifying RAG Failure Modes
+
+### Q11. What are some common ways a RAG system might fail or produce less-than-ideal results, and what might be the underlying causes?
+
+- poor chunking ---lead to--> answer might use irrelavant info
+- bad embedding model ---lead to---> answer contradict the document
+- low top_k value ---leads to--> might miss key information in answer
+- poorly embedded question ---leads to--> might get the topic right but answer wrong
+
+### Q12. Can you think of a specific scenario where poor chunk boundaries might cause the RAG system to retrieve a chunk that seems relevant on the surface but actually leads to a misleading or incomplete answer from the LLM?
+
+Ans :--
+
+#### Scenario: Financial Report Analysis
+
+**Document Excerpt:**  
+"Revenue surged 25% in Q3 2023, driven by the AI division's expansion into new markets. This growth masked underlying issues, as operational costs ballooned 40% due to supply chain disruptions, resulting in a quarterly net loss of $15M."
+
+**Poor Chunking:**
+
+- Chunk 1: "Revenue surged 25% in Q3 2023, driven by the AI division's expansion into new markets."
+- Chunk 2: "This growth masked underlying issues, as operational costs ballooned 40% due to supply chain disruptions, resulting in a quarterly net loss of $15M."
+
+**Query:** "What was the impact of AI division expansion in Q3 2023?"
+
+**Retrieved Chunk:** Chunk 1 (matches "AI division" and "Q3 2023").
+
+**LLM Output:** "The AI division's expansion positively impacted revenue, surging it by 25% in Q3 2023."
+
+**Issue:** Misleading—omits cost overruns and net loss, portraying false financial health.
