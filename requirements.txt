@@ -12,3 +12,5 @@ anthropic
 ddgs
 pyPDF2
 fastembed
+rank_bm25
+nltk
