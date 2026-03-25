@@ -33,7 +33,7 @@ The **communication bridge** between your application and MCP servers. It handle
    │              │ 5. ListToolsResult             │              │              │
    │              │<────────────────│              │              │              │
    │              │                 │              │              │              │
-   │              │ 6. Query + Tools──────────────>│              │              │
+   │              │ 6. Query + Tools│              │              │              │
    │              │─────────────────────────────────────────────────────────────>│
    │              │                 │              │              │              │
    │              │                 │              │ 7. Tool Use Response        │
@@ -62,6 +62,28 @@ The **communication bridge** between your application and MCP servers. It handle
    │ 16. Answer   │                 │              │              │              │
    │<─────────────│                 │              │              │              │
    └──────────────┴─────────────────┴──────────────┴──────────────┴──────────────┘
+```
+
+```
+| Step   | What Happens                                             | In Our Example                                                      |
+| ------ | -------------------------------------------------------- | ------------------------------------------------------------------- |
+| **1**  | User sends a query                                       | You type: *"What's the weather in Paris?"*                          |
+| **2**  | Your Server asks MCP Client: *"What tools do you have?"* | "Hey, what tools are available?"                                    |
+| **3**  | MCP Client forwards to MCP Server                        | Passes the question along                                           |
+| **4**  | MCP Server replies: *"I have a `get_weather` tool"*      | Lists available tools                                               |
+| **5**  | Your Server receives the tool list                       | Now knows about `get_weather`                                       |
+| **6**  | Your Server sends query + tools to Claude                | "Here's what the user asked, and here's a weather tool you can use" |
+| **7**  | Claude decides to use the tool                           | Claude: *"I should use `get_weather` for Paris"*                    |
+| **8**  | Your Server tells MCP Client: *"Call the weather tool"*  | Execute the tool                                                    |
+| **9**  | MCP Client forwards to MCP Server                        | Passes the execution request                                        |
+| **10** | MCP Server calls the actual Weather API                  | Fetches real weather data from weather.com (or similar)             |
+| **11** | Weather API returns data                                 | *"72°F, sunny"*                                                     |
+| **12** | MCP Server returns result to Client                      | Passes weather data back                                            |
+| **13** | MCP Client returns result to Your Server                 | Your server now has the weather                                     |
+| **14** | Your Server sends tool result to Claude                  | "Here's the weather data"                                           |
+| **15** | Claude generates final response                          | *"It's 72°F and sunny in Paris!"*                                   |
+| **16** | Your Server shows answer to you                          | You see the friendly response                                       |
+
 ```
 
 ### Key Points:
