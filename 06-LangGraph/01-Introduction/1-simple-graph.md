@@ -2,7 +2,7 @@
 
 Let's build a simple graph with 3 nodes and one conditional edge.
 
-![Screenshot 2024-08-20 at 3.11.22 PM.png](https://cdn.prod.website-files.com/65b8cd72835ceeacd4449a53/66dba5f465f6e9a2482ad935_simple-graph1.png)
+![Simple_graph.png](./images/simple-graph.png)
 
 ## State
 
@@ -134,7 +134,7 @@ Output from node 'user_node':
 -----
 ```
 
-![sample_workflow](./sample_workflow.png)
+![sample_workflow](./images/sample_workflow.png)
 
 ---
 
